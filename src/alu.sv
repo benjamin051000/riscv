@@ -5,8 +5,7 @@ module alu #(
 ) (
     input ALU_FN_t fn,
     input logic [31:25] funct7, // For Integer Register-Register Operations
-    input logic [WIDTH-1:0] a, 
-    input logic [WIDTH-1:0] b,
+    input logic [WIDTH-1:0] a, b, 
     output logic [WIDTH-1:0] out
 );
     
