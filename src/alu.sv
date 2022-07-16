@@ -3,8 +3,8 @@ import ALU_FNS::*;
 module alu #(
     parameter int WIDTH = 4 
 ) (
-    input ALU_FN_t fn,
-    input logic [31:25] funct7, // For Integer Register-Register Operations
+    input alu_fn_t fn,
+    funct7_t funct7, // For Integer Register-Register Operations
     input logic [WIDTH-1:0] a, b, 
     output logic [WIDTH-1:0] out
 );

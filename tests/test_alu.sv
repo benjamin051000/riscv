@@ -4,12 +4,12 @@ import ALU_FNS::*;
 
 module test_alu;
 
-localparam NUM_TESTS = 0;
-localparam WIDTH = 8;
+localparam NUM_TESTS = 100;
+localparam WIDTH = 32;
 localparam longint MAX_INT = 2 ** WIDTH - 1; // For edge cases
 
-ALU_FN_t fn;
-logic [31:25] funct7; // For Integer Register-Register Operations
+alu_fn_t fn;
+funct7_t funct7; // For Integer Register-Register Operations
 logic [WIDTH-1:0] a, b;
 logic [WIDTH-1:0] out, correct;
 
@@ -22,7 +22,7 @@ task verify();
             if (funct7)
                 correct = a - b; 
             else
-                correct = signed'(a) + signed'(b);
+                correct = a + b;  // This appears to be signed
         end 
 
         AND: correct = a & b;
@@ -53,7 +53,7 @@ initial begin
     repeat(NUM_TESTS) begin
         a = $random;
         b = $random;
-        funct7 = '0;
+        funct7 = ADD_SRL;
         std::randomize(fn);
 
         verify();
@@ -61,11 +61,10 @@ initial begin
     end
 
     // Test some edge cases
-    $display("Max int: %d", MAX_INT);
     a = MAX_INT;
     b = 1;
     fn = ADD_SUB;
-    funct7 = 0; // ADD
+    funct7 = ADD_SRL;
 
     verify();
 
@@ -78,7 +77,7 @@ initial begin
     b = -6;
     verify();
 
-    funct7 = '1;
+    funct7 = SUB_SRA;
     verify(); // subtract
 
     a = -5;
