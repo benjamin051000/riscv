@@ -55,20 +55,20 @@ localparam STORE = 7'b0100011;
 endpackage
 
 
-package ALU_FN;
+package ALU_FNS;
 
-localparam ADD = 3'h0;
-localparam SUB = 3'h0;
+typedef enum logic [2:0]  {
+    ADD_SUB = 3'h0,
 
-localparam SLT = 3'h2;
-localparam SLTU = 3'h3;
+    SLT = 3'h2,
+    SLTU = 3'h3,
 
-localparam AND = 3'h7;
-localparam OR = 3'h6;
-localparam XOR = 3'h4;
+    AND = 3'h7,
+    OR = 3'h6,
+    XOR = 3'h4,
 
-localparam SLL = 3'h1;
-localparam SRL = 3'h5;
-localparam SRA = 3'h5;
+    SLL = 3'h1,
+    SRL_SRA = 3'h5
+} ALU_FN_t;
 
 endpackage

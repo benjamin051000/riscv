@@ -1,9 +1,9 @@
-import ALU_FN::*;
+import ALU_FNS::*;
 
 module alu #(
     parameter int WIDTH = 4 
 ) (
-    input logic [2:0] fn,
+    input ALU_FN_t fn,
     input logic [31:25] funct7, // For Integer Register-Register Operations
     input logic [WIDTH-1:0] a, 
     input logic [WIDTH-1:0] b,
@@ -13,7 +13,7 @@ module alu #(
 always_comb begin
     case (fn)
 
-    ADD|SUB: begin
+    ADD_SUB: begin
         if (funct7) // == 0100000b
             out = a - b;
         else
@@ -28,7 +28,7 @@ always_comb begin
 
     SLL: out = a << b;
 
-    SRL|SRA: begin
+    SRL_SRA: begin
         if (funct7)
             out = a >>> b;
         else
