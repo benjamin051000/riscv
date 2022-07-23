@@ -6,9 +6,9 @@ module regfile_async #(
     parameter int WIDTH = 32
 ) (
     input logic clk, rst,
-    input logic [WIDTH-1:0] addr_a, addr_b, wr_addr,
+    input logic [WIDTH-1:0] addr_a, addr_b, wr_addr, wr_data,
     input logic wr_en,
-    output logic [WIDTH-1:0] a, b, wr_data
+    output logic [WIDTH-1:0] a, b 
 );
 
 logic [WIDTH-1:0][WIDTH-1:0] registers;
@@ -33,9 +33,9 @@ module regfile #(
     parameter int WIDTH = 32
 ) (
     input logic clk, rst,
-    input logic [WIDTH-1:0] addr_a, addr_b, wr_addr,
+    input logic [WIDTH-1:0] addr_a, addr_b, wr_addr, wr_data,
     input logic wr_en,
-    output logic [WIDTH-1:0] a, b, wr_data
+    output logic [WIDTH-1:0] a, b 
 );
 
 regfile_async #(.WIDTH(WIDTH)) regf (.*);
