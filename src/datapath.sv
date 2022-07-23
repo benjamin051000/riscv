@@ -6,34 +6,56 @@ module datapath #(
     input logic clk, rst
 );
 
-logic [WIDTH-1:0] addr_a, addr_b, wr_addr, alu_inb;
-logic wr_en;
-logic [WIDTH-1:0] a, b, wr_data;
+// Type alias for convenience
+typedef logic [WIDTH-1:0] word; // TODO move to a common pkg
+
+
+// Program counter
+word pc_d, pc_q, pc_en;
+register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_en), .*);
+
+
+// Memory
+word mem_addr, mem_data;
+memory #(.WIDTH(WIDTH)) _mem (.addr(mem_addr), .data(mem_data));
+assign mem_addr = pc_q;
+
+
+// Instruction register
+word ir_d, instruction;
+logic ir_en;
+register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_en), .*);
+assign ir_d = mem_data;
+
+
+// Register file
+logic [4:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
+word regfile_wr_data;
+logic regfile_wr_en;
+word regfile_a, regfile_b, wr_data;
+regfile #(.WIDTH(WIDTH)) _regfile (
+    clk, rst,
+    regfile_wr_en,
+    regfile_addr_a,
+    regfile_addr_b,
+    regfile_wr_addr,
+    regfile_wr_data,
+    regfile_a,
+    regfile_b
+);
+assign regfile_addr_a = instruction[19:15];
+assign regfile_addr_b = instruction[24:20];
+assign regfile_wr_addr = instruction[11:7];
+assign regfile_wr_data = alu_out;
+
+// ALU
 alu_fn_t fn;
 funct7_t funct7;
-logic [WIDTH-1:0] out;
-
-assign wr_data = out;
-
-logic [WIDTH-1:0] d, q;
-logic  en;
-
-logic [WIDTH-1:0] mem_addr, mem_data;
-
-logic [WIDTH-1:0] d_pc, q_pc;
-register #(.WIDTH(WIDTH)) _pc (.d(d_pc), .q(q_pc));
-assign mem_addr = q_pc;
-
-memory #(.WIDTH(WIDTH)) _memory (.addr(mem_addr), .data(mem_data));
-
-logic [WIDTH-1:0] instruction;
-assign instruction = mem_data;
-register #(.WIDTH(WIDTH)) _ir (.d(instruction), .*);
-
-regfile #(.WIDTH(WIDTH)) _regfile (.*);
-
-// assign alu_inb = sel ? b : q;
-
-alu #(.WIDTH(WIDTH)) _alu (.*);
+word alu_a, alu_b, alu_out;
+alu #(.WIDTH(WIDTH)) _alu (.a(alu_a), .b(alu_b), .out(alu_out), .*);
+assign alu_a = regfile_a;
+assign alu_b = regfile_b;
+assign fn = alu_fn_t'(instruction[14:12]);
+assign funct7 = funct7_t'(instruction[31:25]);
 
 endmodule
