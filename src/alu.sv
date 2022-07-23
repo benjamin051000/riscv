@@ -4,7 +4,7 @@ module alu #(
     parameter int WIDTH = 4 
 ) (
     input alu_fn_t fn,
-    funct7_t funct7, // For Integer Register-Register Operations
+    input funct7_t funct7, // For Integer Register-Register Operations
     input logic [WIDTH-1:0] a, b, 
     output logic [WIDTH-1:0] out
 );
