@@ -18,7 +18,17 @@ assign wr_data = out;
 logic [WIDTH-1:0] d, q;
 logic  en;
 
-register #(.WIDTH(WIDTH)) _ir (.*);
+logic [WIDTH-1:0] mem_addr, mem_data;
+
+logic [WIDTH-1:0] d_pc, q_pc;
+register #(.WIDTH(WIDTH)) _pc (.d(d_pc), .q(q_pc));
+assign mem_addr = q_pc;
+
+memory #(.WIDTH(WIDTH)) _memory (.addr(mem_addr), .data(mem_data));
+
+logic [WIDTH-1:0] instruction;
+assign instruction = mem_data;
+register #(.WIDTH(WIDTH)) _ir (.d(instruction), .*);
 
 regfile #(.WIDTH(WIDTH)) _regfile (.*);
 
