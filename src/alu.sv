@@ -13,7 +13,7 @@ always_comb begin
     case (fn)
 
     ADD_SUB: begin
-        if (funct7) // == 0100000b
+        if (funct7 == SUB_SRA) // == 0100000b
             out = a - b;
         else
             out = a + b;
@@ -28,7 +28,7 @@ always_comb begin
     SLL: out = a << b;
 
     SRL_SRA: begin
-        if (funct7)
+        if (funct7 == SUB_SRA)
             out = a >>> b;
         else
             out = a >> b;
