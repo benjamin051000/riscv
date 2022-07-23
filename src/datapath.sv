@@ -3,7 +3,7 @@ import ALU_FNS::*;
 module datapath #(
     parameter int WIDTH = 32
 ) (
-    input logic clk, rst
+    input logic clk, rst, sel
 );
 
 logic [WIDTH-1:0] addr_a, addr_b, wr_addr;
@@ -15,8 +15,15 @@ logic [WIDTH-1:0] out;
 
 assign wr_data = out;
 
+logic [WIDTH-1:0] d, q;
+logic  en;
+
+register #(.WIDTH(WIDTH)) _ir (.*);
+
 regfile #(.WIDTH(WIDTH)) _regfile (.*);
 
-alu #(.WIDTH(WIDTH)) _alu (.*);
+assign alu_inb = sel ? b : q;
+
+alu #(.WIDTH(WIDTH)) _alu (.b(alu_inb), .*);
 
 endmodule

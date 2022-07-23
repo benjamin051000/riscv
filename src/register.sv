@@ -1,7 +1,7 @@
-module reg #(
-    parameter int WIDTH = 32;
+module register #(
+    parameter int WIDTH = 32
 ) (
-    input logic clk, rst, en
+    input logic clk, rst, en,
     input logic [WIDTH-1:0] d,
     output logic [WIDTH-1:0] q
 );
