@@ -1,7 +1,7 @@
 import ALU_FNS::*;
 
 module datapath #(
-    parameter int WIDTH = 32
+    parameter int WIDTH 
 ) (
     input logic clk, rst
 );
