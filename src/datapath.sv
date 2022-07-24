@@ -16,8 +16,15 @@ register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_en), .*);
 
 
 // Memory
-word mem_addr, mem_data;
-memory #(.WIDTH(WIDTH)) _mem (.addr(mem_addr), .data(mem_data));
+word mem_addr, mem_wren, mem_wr_data, mem_rd_data;
+memory #(.WIDTH(WIDTH)) _mem (
+    .clk(clk),
+    .rst(rst),
+    .addr(mem_addr),
+    .wren(mem_wren),
+    .wr_data(mem_wr_data),
+    .rd_data(mem_rd_data)
+);
 assign mem_addr = pc_q;
 
 
@@ -25,7 +32,7 @@ assign mem_addr = pc_q;
 word ir_d, instruction;
 logic ir_en;
 register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_en), .*);
-assign ir_d = mem_data;
+assign ir_d = mem_rd_data;
 
 
 // Register file
