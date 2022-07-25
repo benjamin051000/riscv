@@ -17,7 +17,11 @@ typedef logic [WIDTH-1:0] word; // TODO move to a common pkg
 // Program counter
 word pc_d, pc_q, pc_en;
 register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
-assign pc_d = pc_q + 4; // TODO verify this works properly
+// Something cool happens here: In RTL viewer, this synthesizes to 
+// an add between 1'h1 and pc_q[31:2]. Then, it concats the result with pc_q[1:0].
+// Since +4 doesn't affect lower two bits, it doesn't include them in the addition, just adds them back after the add.
+// Perhaps this saves resources or something. TODO look into why Quartus does this optimization.
+assign pc_d = pc_q + 4;
 
 
 // Memory
