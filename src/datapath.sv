@@ -1,9 +1,13 @@
 import ALU_FNS::*;
+import rv32i_opcodes::rv32i_opcode_t;
 
 module datapath #(
     parameter int WIDTH 
 ) (
-    input logic clk, rst
+    input logic clk, rst,
+    input logic regfile_wren,
+    output rv32i_opcode_t opcode
+
 );
 
 // Type alias for convenience
@@ -38,11 +42,10 @@ assign ir_d = mem_rd_data;
 // Register file
 logic [4:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
 word regfile_wr_data;
-logic regfile_wr_en;
 word regfile_a, regfile_b, wr_data;
 regfile #(.WIDTH(WIDTH)) _regfile (
     clk, rst,
-    regfile_wr_en,
+    regfile_wren,
     regfile_addr_a,
     regfile_addr_b,
     regfile_wr_addr,
