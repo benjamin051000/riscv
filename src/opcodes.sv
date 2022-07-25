@@ -1,14 +1,28 @@
-package types;
+/*
+Various packages
+Some are not used and will be removed eventually
+*/
 
-localparam IMM   = 7'b0010011;
-localparam R   = 7'b0110011;
-localparam S =  7'b0100011;
-localparam B = 7'b1100011;
-localparam J = 7'b1101111;
-localparam I = 7'b1100111;
-
-localparam ECALL = 7'b1110011;
-localparam EBREAK = 7'b1110011;
+package rv32i_opcodes;
+/* 
+From RV32/64G Instruction Set Listings:
+Table 24.1 RISC-V base opcode map, pg. 129 
+of riscv-spec-20191213.pdf 
+*/
+// TODO inst[1:0] == 11b. Is there an optimization here?
+typedef enum logic [6:0] {
+    LOAD = 7'b0000011,
+    STORE = 7'b0100011,
+    BRANCH = 7'b1100011,
+    JALR = 7'b1100111,
+    MISC_MEM = 7'b0001111, // FENCE, FENCE.I instructions
+    JAL = 7'b1101111,
+    OP_IMM = 7'b0010011, // Immediate ALU instructions (ADDI, ANDI, etc.)
+    OP = 7'b0110011, // Register ALU instructions (ADD, AND, etc.)
+    SYSTEM = 7'b1110011, // ECALL, EBREAK, Zicsr instructions
+    AUIPC = 7'b0010111,
+    LUI = 7'b0110111
+} rv32i_opcode_t;
 
 endpackage
 
