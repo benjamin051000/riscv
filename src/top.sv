@@ -6,7 +6,7 @@ module top #(
     input logic clk, rst
 );
 
-logic regfile_wren;
+logic regfile_wren, ir_wren, pc_inc;
 rv32i_opcode_t opcode;
 
 controller #(.WIDTH(WIDTH)) _controller (.*);

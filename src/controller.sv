@@ -5,7 +5,7 @@ module controller #(
 ) (
     input logic clk, rst,
     input rv32i_opcode_t opcode,
-    output logic regfile_wren
+    output logic regfile_wren, ir_wren, pc_inc
 );
 
 // State machine types
@@ -41,9 +41,17 @@ end
 */
 always_comb begin
     regfile_wren = '0;
+    ir_wren = '0;
+    pc_inc = '0;
 
     case(state)
     FETCH: begin
+        // Get the next instruction from memory.
+        // Tell IR to save the output of mem.
+        ir_wren = '1;
+        // Also, tell PC to incrememnt (to next instruction)
+        pc_inc = '1;
+
         next_state = DECODE;
     end
     

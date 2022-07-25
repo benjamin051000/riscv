@@ -5,7 +5,7 @@ module datapath #(
     parameter int WIDTH 
 ) (
     input logic clk, rst,
-    input logic regfile_wren,
+    input logic regfile_wren, ir_wren, pc_inc,
     output rv32i_opcode_t opcode
 
 );
@@ -16,7 +16,8 @@ typedef logic [WIDTH-1:0] word; // TODO move to a common pkg
 
 // Program counter
 word pc_d, pc_q, pc_en;
-register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_en), .*);
+register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
+assign pc_d = pc_q + 4; // TODO verify this works properly
 
 
 // Memory
@@ -34,8 +35,7 @@ assign mem_addr = pc_q;
 
 // Instruction register
 word ir_d, instruction;
-logic ir_en;
-register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_en), .*);
+register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_wren), .*);
 assign ir_d = mem_rd_data;
 assign opcode = rv32i_opcode_t'(instruction[6:0]);
 
