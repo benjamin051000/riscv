@@ -37,6 +37,7 @@ word ir_d, instruction;
 logic ir_en;
 register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_en), .*);
 assign ir_d = mem_rd_data;
+assign opcode = rv32i_opcode_t'(instruction[6:0]);
 
 
 // Register file
