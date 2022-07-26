@@ -1,4 +1,5 @@
 import ALU_FNS::*;
+import LOAD_STORE_FNS::*;
 import rv32i_opcodes::rv32i_opcode_t;
 
 module datapath #(
@@ -26,15 +27,20 @@ assign pc_d = pc_q + 4;
 
 // Memory
 word mem_addr, mem_wren, mem_wr_data, mem_rd_data;
+funct3_t mem_funct3;
 memory #(.WIDTH(WIDTH)) _mem (
     .clk(clk),
     .rst(rst),
     .addr(mem_addr),
     .wren(mem_wren),
     .wr_data(mem_wr_data),
+    .funct3(mem_funct3),
     .rd_data(mem_rd_data)
 );
 assign mem_addr = pc_q;
+assign mem_wren = '0; // TODO remove
+assign mem_wr_data = '1; // TODO remove
+assign mem_funct3 = WORD;
 
 
 // Instruction register
@@ -61,12 +67,13 @@ regfile #(.WIDTH(WIDTH)) _regfile (
 assign regfile_addr_a = instruction[19:15];
 assign regfile_addr_b = instruction[24:20];
 assign regfile_wr_addr = instruction[11:7];
+word alu_out;
 assign regfile_wr_data = alu_out;
 
 // ALU
 alu_fn_t fn;
 funct7_t funct7;
-word alu_a, alu_b, alu_out;
+word alu_a, alu_b;
 alu #(.WIDTH(WIDTH)) _alu (.a(alu_a), .b(alu_b), .out(alu_out), .*);
 assign alu_a = regfile_a;
 assign alu_b = regfile_b;

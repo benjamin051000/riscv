@@ -1,7 +1,7 @@
 import LOAD_STORE_FNS::*;
 
 module memory #(
-    parameter int WIDTH = 32
+    parameter int WIDTH
 ) (
     input logic clk, rst,
     input logic [WIDTH-1:0] addr, // TODO replace if not useful
@@ -12,7 +12,7 @@ module memory #(
 );
 
 logic [1:0] byte_num; // lowest 2 bits
-logic [WIDTH-1-2:0] word_addr;
+logic [WIDTH-1:2] word_addr; // All but lowest 2
 logic [WIDTH-1:0] q;
 
 // Extract actual address and byte address
@@ -34,16 +34,22 @@ always_comb begin
     WORD: rd_data = q; // Nothing to do here
 
     HALF: begin
-        if(byte_num == 2'b00) rd_data = q & 4'hffff;
-        else rd_data = q & (4'hffff << 16) >> 16;
+        if(byte_num == 2'b00) 
+            rd_data = q & 'hffff;
+        else 
+            rd_data = q & ('hffff << 16) >> 16;
     end
 
     BYTE: begin
         // TODO make this simpler
-        if(byte_num == 2'b00) rd_data = q & 2'hff;
-        else if(byte_num == 2'b01) rd_data = q & (2'hff << 8) >> 8;
-        else if(byte_num == 2'b10) rd_data = q & (2'hff << 16) >> 16;
-        else rd_data = q & (2'hff << 24) >> 24;
+        if(byte_num == 2'b00) 
+            rd_data = q & 'hff;
+        else if(byte_num == 2'b01)
+            rd_data = q & ('hff << 8) >> 8;
+        else if(byte_num == 2'b10)
+            rd_data = q & ('hff << 16) >> 16;
+        else
+            rd_data = q & ('hff << 24) >> 24;
     end
 
     default: rd_data = q; // TODO remove

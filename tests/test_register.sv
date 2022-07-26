@@ -19,7 +19,7 @@ initial begin : drive_inputs
 
     for(int i = 0; i < NUM_TESTS; i++) begin
         rst <= $random;
-        in <= $random;
+        d <= $random;
         en <= $random;
         @(posedge clk);
     end
