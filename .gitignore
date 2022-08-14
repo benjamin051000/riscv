@@ -29,5 +29,8 @@ vsim.dbg
 # End of https://www.toptal.com/developers/gitignore/api/modelsim
 
 # Added by me
-quartus
 *.pdf
+
+# Quartus stuff
+quartus/*
+!*.q[ps]f
