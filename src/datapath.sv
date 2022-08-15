@@ -8,6 +8,7 @@ module datapath #(
     input logic clk, rst,
     input logic regfile_wren, ir_wren, pc_inc,
     output rv32i_opcode_t opcode,
+    output logic[WIDTH-1:0] outport,
 
     input logic flash_en,
     input logic [10:0] flash_addr,
@@ -40,7 +41,8 @@ memory #(.WIDTH(WIDTH)) _mem (
     .wr_data(mem_wr_data),
     .funct3(mem_funct3),
     .rd_data(mem_rd_data),
-    .*
+    .*  // TODO figure out what this is for
+    .outport(outport)
 );
 assign mem_addr = pc_q;
 assign mem_wren = '0; // TODO remove
@@ -54,6 +56,8 @@ register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_wren), .*);
 assign ir_d = mem_rd_data;
 assign opcode = rv32i_opcode_t'(instruction[6:0]);
 
+// TODO put someplace nicer, modelsim needs this declaration above all uses unlike Quartus
+word alu_out;
 
 // Register file
 logic [$clog2(WIDTH)-1:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;

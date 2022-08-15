@@ -4,7 +4,7 @@ import ALU_FNS::*;
 
 module test_alu;
 
-localparam NUM_TESTS = 100;
+localparam NUM_TESTS = 1000;
 localparam WIDTH = 32;
 localparam longint MAX_INT = 2 ** WIDTH - 1; // For edge cases
 

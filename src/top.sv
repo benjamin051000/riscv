@@ -7,7 +7,8 @@ module top #(
 
     input logic flash_en,
     input logic [10:0] flash_addr,
-    input logic [WIDTH-1:0] flash_data
+    input logic [WIDTH-1:0] flash_data,
+    output logic[WIDTH-1:0] outport
 );
 
 logic regfile_wren, ir_wren, pc_inc;

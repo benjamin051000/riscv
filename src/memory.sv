@@ -13,7 +13,8 @@ module memory #(
     // Flash the memory
     input logic flash_en,
     input logic [10:0] flash_addr,
-    input logic [WIDTH-1:0] flash_data
+    input logic [WIDTH-1:0] flash_data,
+    output logic [WIDTH-1:0] rd_data, outport
 );
 
 // logic [1:0] byte_num; // lowest 2 bits
@@ -44,6 +45,16 @@ assign ram_addr = flash_en ? flash_addr : addr[12:2];
 assign ram_wr_data = flash_en ? flash_data : wr_data;
 assign ram_wren = flash_en | wren;
 
+logic outport_en;
+register  #(.WIDTH(WIDTH)) _outport (
+    .clk(clk),
+    .rst(rst),
+    .en(outport_en),
+    .d(q),
+    .q(outport)
+);
+assign outport_en = wren && addr == 16'hFFFC;
+
 // Handle byte-addressing
 // always_comb begin
 //     case (funct3)
@@ -72,5 +83,9 @@ assign ram_wren = flash_en | wren;
 //     endcase
 // end
 
+//     default: rd_data = q; // TODO remove
+//     endcase
+// end
+assign rd_data = q; // TODO replace with byte-addressing
 
 endmodule
