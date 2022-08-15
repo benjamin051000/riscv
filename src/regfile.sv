@@ -21,7 +21,8 @@ assign b = registers[addr_b];
 
 always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
-        registers <= '0;
+        for (int i = 0; i < WIDTH; i++)
+            registers[i] <= '0;
     end
     else begin
         if (wr_en)

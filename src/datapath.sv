@@ -7,8 +7,11 @@ module datapath #(
 ) (
     input logic clk, rst,
     input logic regfile_wren, ir_wren, pc_inc,
-    output rv32i_opcode_t opcode
+    output rv32i_opcode_t opcode,
 
+    input logic flash_en,
+    input logic [10:0] flash_addr,
+    input logic [WIDTH-1:0] flash_data
 );
 
 // Type alias for convenience
@@ -26,7 +29,8 @@ assign pc_d = pc_q + 4;
 
 
 // Memory
-word mem_addr, mem_wren, mem_wr_data, mem_rd_data;
+word mem_addr, mem_wr_data, mem_rd_data;
+logic mem_wren;
 funct3_t mem_funct3;
 memory #(.WIDTH(WIDTH)) _mem (
     .clk(clk),
@@ -35,7 +39,8 @@ memory #(.WIDTH(WIDTH)) _mem (
     .wren(mem_wren),
     .wr_data(mem_wr_data),
     .funct3(mem_funct3),
-    .rd_data(mem_rd_data)
+    .rd_data(mem_rd_data),
+    .*
 );
 assign mem_addr = pc_q;
 assign mem_wren = '0; // TODO remove
@@ -51,7 +56,7 @@ assign opcode = rv32i_opcode_t'(instruction[6:0]);
 
 
 // Register file
-logic [4:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
+logic [$clog2(WIDTH)-1:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
 word regfile_wr_data;
 word regfile_a, regfile_b, wr_data;
 regfile #(.WIDTH(WIDTH)) _regfile (
