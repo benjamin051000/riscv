@@ -6,7 +6,8 @@ module datapath #(
 ) (
     input logic clk, rst,
     input logic regfile_wren, ir_wren, pc_inc,
-    output rv32i_opcode_t opcode
+    output rv32i_opcode_t opcode,
+    output logic[WIDTH-1:0] outport
 
 );
 
@@ -32,7 +33,8 @@ memory #(.WIDTH(WIDTH)) _mem (
     .addr(mem_addr),
     .wren(mem_wren),
     .wr_data(mem_wr_data),
-    .rd_data(mem_rd_data)
+    .rd_data(mem_rd_data),
+    .outport(outport)
 );
 assign mem_addr = pc_q;
 

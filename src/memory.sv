@@ -8,7 +8,7 @@ module memory #(
     input logic wren,  // 0 -> rd, 1 -> wr
     input logic [WIDTH-1:0] wr_data,
     input funct3_t funct3, // Determine size (word, halfword, byte)
-    output logic [WIDTH-1:0] rd_data
+    output logic [WIDTH-1:0] rd_data, outport
 );
 
 logic [1:0] byte_num; // lowest 2 bits
@@ -28,27 +28,37 @@ ram	ram_inst (
 	.q(q)
 );
 
+logic outport_en;
+register  #(.WIDTH(WIDTH)) _outport (
+    .clk(clk),
+    .rst(rst),
+    .en(outport_en),
+    .d(q),
+    .q(outport)
+);
+assign outport_en = wren && addr == 16'hFFFC;
+
 // Handle byte-addressing
-always_comb begin
-    case (funct3)
-    WORD: rd_data = q; // Nothing to do here
+// always_comb begin
+//     case (funct3)
+//     WORD: rd_data = q; // Nothing to do here
 
-    HALF: begin
-        if(byte_num == 2'b00) rd_data = q & 4'hffff;
-        else rd_data = q & (4'hffff << 16) >> 16;
-    end
+//     HALF: begin
+//         if(byte_num == 2'b00) rd_data = q & 4'hffff;
+//         else rd_data = q & (4'hffff << 16) >> 16;
+//     end
 
-    BYTE: begin
-        // TODO make this simpler
-        if(byte_num == 2'b00) rd_data = q & 2'hff;
-        else if(byte_num == 2'b01) rd_data = q & (2'hff << 8) >> 8;
-        else if(byte_num == 2'b10) rd_data = q & (2'hff << 16) >> 16;
-        else rd_data = q & (2'hff << 24) >> 24;
-    end
+//     BYTE: begin
+//         // TODO make this simpler
+//         if(byte_num == 2'b00) rd_data = q & 2'hff;
+//         else if(byte_num == 2'b01) rd_data = q & (2'hff << 8) >> 8;
+//         else if(byte_num == 2'b10) rd_data = q & (2'hff << 16) >> 16;
+//         else rd_data = q & (2'hff << 24) >> 24;
+//     end
 
-    default: rd_data = q; // TODO remove
-    endcase
-end
-
+//     default: rd_data = q; // TODO remove
+//     endcase
+// end
+assign rd_data = q; // TODO replace with byte-addressing
 
 endmodule
