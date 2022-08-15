@@ -34,3 +34,6 @@ vsim.dbg
 # Quartus stuff
 quartus/*
 !*.q[ps]f
+
+# load.mif symbolic link
+programs/load.mif
