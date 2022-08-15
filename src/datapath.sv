@@ -43,6 +43,8 @@ register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_wren), .*);
 assign ir_d = mem_rd_data;
 assign opcode = rv32i_opcode_t'(instruction[6:0]);
 
+// TODO put someplace nicer, modelsim needs this declaration above all uses unlike Quartus
+word alu_out;
 
 // Register file
 logic [4:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
@@ -66,7 +68,7 @@ assign regfile_wr_data = alu_out;
 // ALU
 alu_fn_t fn;
 funct7_t funct7;
-word alu_a, alu_b, alu_out;
+word alu_a, alu_b;
 alu #(.WIDTH(WIDTH)) _alu (.a(alu_a), .b(alu_b), .out(alu_out), .*);
 assign alu_a = regfile_a;
 assign alu_b = regfile_b;
