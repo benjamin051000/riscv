@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 module test_rtype;
 
 localparam WIDTH = 32;

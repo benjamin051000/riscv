@@ -1,3 +1,5 @@
+`timescale 1ns/10ps
+
 import LOAD_STORE_FNS::*;
 
 module test_memory;
