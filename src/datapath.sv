@@ -41,8 +41,8 @@ memory #(.WIDTH(WIDTH)) _mem (
     .wr_data(mem_wr_data),
     .funct3(mem_funct3),
     .rd_data(mem_rd_data),
+    .outport(outport),
     .*  // TODO figure out what this is for
-    .outport(outport)
 );
 assign mem_addr = pc_q;
 assign mem_wren = '0; // TODO remove
@@ -76,7 +76,6 @@ regfile #(.WIDTH(WIDTH)) _regfile (
 assign regfile_addr_a = instruction[19:15];
 assign regfile_addr_b = instruction[24:20];
 assign regfile_wr_addr = instruction[11:7];
-word alu_out;
 assign regfile_wr_data = alu_out;
 
 // ALU

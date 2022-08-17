@@ -14,7 +14,9 @@ module memory #(
     input logic flash_en,
     input logic [10:0] flash_addr,
     input logic [WIDTH-1:0] flash_data,
-    output logic [WIDTH-1:0] rd_data, outport
+
+    // Outport
+    output logic [WIDTH-1:0] outport
 );
 
 // logic [1:0] byte_num; // lowest 2 bits
@@ -38,8 +40,6 @@ ram	ram_inst (
 	.wren(ram_wren),
 	.q(q)
 );
-
-assign rd_data = q;
 
 assign ram_addr = flash_en ? flash_addr : addr[12:2];
 assign ram_wr_data = flash_en ? flash_data : wr_data;
