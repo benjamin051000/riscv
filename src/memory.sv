@@ -12,7 +12,7 @@ module memory #(
 
     // Flash the memory
     input logic flash_en,
-    input logic [10:0] flash_addr,
+    input logic [$bits(addr)-1:0] flash_addr,
     input logic [WIDTH-1:0] flash_data,
 
     // Outport
@@ -41,7 +41,7 @@ ram	ram_inst (
 	.q(q)
 );
 
-assign ram_addr = flash_en ? flash_addr : addr[12:2];
+assign ram_addr = flash_en ? flash_addr[12:2] : addr[12:2];
 assign ram_wr_data = flash_en ? flash_data : wr_data;
 assign ram_wren = flash_en | wren;
 

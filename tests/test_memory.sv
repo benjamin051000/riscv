@@ -11,11 +11,11 @@ logic [WIDTH-1:0] addr; // TODO replace if not useful
 logic wren = 1'b0;  // 0 -> rd, 1 -> wr
 logic [WIDTH-1:0] wr_data;
 funct3_t funct3 = WORD; // Determine size (word, halfword, byte)
-logic [WIDTH-1:0] rd_data;
+logic [WIDTH-1:0] rd_data, outport;
 
 // Flash the memory
 logic flash_en;
-logic [10:0] flash_addr;
+logic [$bits(addr)-1:0] flash_addr;
 logic [WIDTH-1:0] flash_data;
 
 memory #(.WIDTH(WIDTH)) DUT (.*);
