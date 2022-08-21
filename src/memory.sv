@@ -1,18 +1,18 @@
 import LOAD_STORE_FNS::*;
 
 module memory #(
-    parameter int WIDTH
+    parameter int WIDTH = 32
 ) (
     input logic clk, rst,
     input logic [WIDTH-1:0] addr, // TODO replace if not useful
     input logic wren,  // 0 -> rd, 1 -> wr
     input logic [WIDTH-1:0] wr_data,
-    input funct3_t funct3, // Determine size (word, halfword, byte)
+    // input funct3_t funct3, // Determine size (word, halfword, byte)
     output logic [WIDTH-1:0] rd_data,
 
     // Flash the memory
     input logic flash_en,
-    input logic [$bits(addr)-1:0] flash_addr,
+    input logic [$bits(addr)-1:0] flash_addr, // WARNING: This will throw quartus warning 21074 since only [12:2] are used
     input logic [WIDTH-1:0] flash_data,
 
     // Outport
