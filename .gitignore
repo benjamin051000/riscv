@@ -37,3 +37,6 @@ quartus/*
 
 # load.mif symbolic link
 programs/load.mif
+# .mif temporary files (I guess)
+programs/load.ver
+
