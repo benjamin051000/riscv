@@ -3,15 +3,15 @@ import LOAD_STORE_FNS::*;
 import rv32i_opcodes::rv32i_opcode_t;
 
 module datapath #(
-    parameter int WIDTH 
+    parameter int WIDTH = 32
 ) (
     input logic clk, rst,
-    input logic regfile_wren, ir_wren, pc_inc,
+    input logic regfile_wren, ir_wren, pc_inc, mem_wren,
     output rv32i_opcode_t opcode,
     output logic[WIDTH-1:0] outport,
 
     input logic flash_en,
-    input logic [10:0] flash_addr,
+    input logic [WIDTH-1:0] flash_addr,
     input logic [WIDTH-1:0] flash_data
 );
 
@@ -25,13 +25,12 @@ register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
 // Something cool happens here: In RTL viewer, this synthesizes to 
 // an add between 1'h1 and pc_q[31:2]. Then, it concats the result with pc_q[1:0].
 // Since +4 doesn't affect lower two bits, it doesn't include them in the addition, just adds them back after the add.
-// Perhaps this saves resources or something. TODO look into why Quartus does this optimization.
+// Perhaps this saves resources or something. TODO look into why Quartus does this optimization. Is +1 more efficient than +4?
 assign pc_d = pc_q + 4;
 
 
 // Memory
 word mem_addr, mem_wr_data, mem_rd_data;
-logic mem_wren;
 funct3_t mem_funct3;
 memory #(.WIDTH(WIDTH)) _mem (
     .clk(clk),
@@ -45,8 +44,7 @@ memory #(.WIDTH(WIDTH)) _mem (
     .*  // TODO figure out what this is for
 );
 assign mem_addr = pc_q;
-assign mem_wren = '0; // TODO remove
-assign mem_wr_data = '1; // TODO remove
+assign mem_wr_data = regfile_b;
 assign mem_funct3 = WORD;
 
 

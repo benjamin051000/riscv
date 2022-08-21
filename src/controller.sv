@@ -5,7 +5,7 @@ module controller #(
 ) (
     input logic clk, rst,
     input rv32i_opcode_t opcode,
-    output logic regfile_wren, ir_wren, pc_inc
+    output logic regfile_wren, ir_wren, pc_inc, mem_wren
 );
 
 // State machine types
@@ -43,6 +43,7 @@ always_comb begin
     regfile_wren = '0;
     ir_wren = '0;
     pc_inc = '0;
+    mem_wren = '0;
 
     case(state)
     FETCH: begin
@@ -76,6 +77,12 @@ always_comb begin
     end
 
     I_TYPE: begin
+        next_state = FETCH;
+    end
+
+    MEM_TYPE: begin
+        // TODO this is very wrong lol but fix it later 
+        mem_wren = '1;
         next_state = FETCH;
     end
 

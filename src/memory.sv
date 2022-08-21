@@ -7,7 +7,7 @@ module memory #(
     input logic [WIDTH-1:0] addr, // TODO replace if not useful
     input logic wren,  // 0 -> rd, 1 -> wr
     input logic [WIDTH-1:0] wr_data,
-    // input funct3_t funct3, // Determine size (word, halfword, byte)
+    input funct3_t funct3, // Determine size (word, halfword, byte)
     output logic [WIDTH-1:0] rd_data,
 
     // Flash the memory

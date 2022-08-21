@@ -9,7 +9,7 @@ module regfile_async #(
     input logic wr_en,
     input logic [$clog2(WIDTH)-1:0] addr_a, addr_b, wr_addr, // Addresses
     input logic [WIDTH-1:0] wr_data,
-    output logic [WIDTH-1:0] a, b // Data
+    output logic [WIDTH-1:0] a, b // Data (rs1, rs2, respectively)
 
 );
 
