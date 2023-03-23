@@ -12,6 +12,7 @@ module top #(
 );
 
 logic regfile_wren, ir_wren, pc_inc, mem_wren;
+logic regfile_load_from_mem, ram_raddr_31_20;
 rv32i_opcode_t opcode;
 
 controller #(.WIDTH(WIDTH)) _controller (.*);

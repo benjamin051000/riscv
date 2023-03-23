@@ -41,7 +41,8 @@ ram	ram_inst (
 	.q(q)
 );
 
-assign ram_addr = flash_en ? flash_addr[12:2] : addr[12:2];
+/* assign ram_addr = flash_en ? flash_addr[12:2] : addr[12:2]; // NOTE: Be sure to bit shift by 2 to accomodate for this. At least until we have byte-addressing */
+assign ram_addr = flash_en ? flash_addr[10:0] : addr[10:0]; // for now, ignore the bit shift. see above
 assign ram_wr_data = flash_en ? flash_data : wr_data;
 assign ram_wren = flash_en | wren;
 

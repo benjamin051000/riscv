@@ -5,18 +5,27 @@ module controller #(
 ) (
     input logic clk, rst,
     input rv32i_opcode_t opcode,
-    output logic regfile_wren, ir_wren, pc_inc, mem_wren
+
+    // Register enables
+    output logic regfile_wren, ir_wren, pc_inc, mem_wren,
+
+    // Mux selectors
+    output logic regfile_load_from_mem, ram_raddr_31_20 //alu_b_31_20
 );
 
 // State machine types
-typedef enum logic[2:0] {
+typedef enum logic[3:0] {
     FETCH,
     DECODE,
     R_TYPE, // ALU op instructions (not immediate)
     I_TYPE, // ALU op instructions (immediates)
     UJ_TYPE, // Unconditional jump
     BRANCH_TYPE, // Conditional jump
-    MEM_TYPE // Load and store instructions
+
+    MEM_TYPE, // Load and store instructions
+    MEM_TYPE_2,
+
+    ILLEGAL_INST
 } state_t;
 
 state_t state, next_state;
@@ -45,6 +54,11 @@ always_comb begin
     pc_inc = '0;
     mem_wren = '0;
 
+    // Mux selectors
+    ram_raddr_31_20 = '0;
+    regfile_load_from_mem = '1;
+    /* alu_b_31_20 = '0; */
+
     case(state)
     FETCH: begin
         // Get the next instruction from memory.
@@ -58,12 +72,17 @@ always_comb begin
     
     DECODE: begin
         case(opcode)
-        OP: next_state = R_TYPE;
-        OP_IMM: next_state = I_TYPE;
-        LOAD|STORE: next_state = MEM_TYPE;
-        JAL|JALR: next_state = UJ_TYPE;
-        BRANCH: next_state = BRANCH_TYPE;
-        default: next_state = R_TYPE; // TODO remove
+            OP: next_state = R_TYPE;
+
+            OP_IMM: next_state = I_TYPE;
+
+            LOAD, STORE: next_state = MEM_TYPE;
+
+            JAL, JALR: next_state = UJ_TYPE;
+
+            BRANCH: next_state = BRANCH_TYPE;
+
+            default: next_state = ILLEGAL_INST; // TODO remove
         endcase
     end
 
@@ -81,10 +100,38 @@ always_comb begin
     end
 
     MEM_TYPE: begin
-        // TODO this is very wrong lol but fix it later 
-        mem_wren = '1;
+        // Start by calculating the offset.
+        // TODO for now, skip calculation. For testing purposes, always set rs
+        // to x0. This way we can just use the offset as an absolute address.
+
+        if (opcode == LOAD) begin
+            ram_raddr_31_20 = '1;
+            // alu_b_31_20 = '1;
+
+            // regfile_wren = '1;
+            // regfile_load_from_mem = '1;
+        end 
+        else if (opcode == STORE) begin
+            mem_wren = '1;
+        end
+        next_state = MEM_TYPE_2;
+    end
+
+    MEM_TYPE_2: begin
+        // Now the data should be ready on the ram bus.
+        // Store in a reg.
+        if (opcode == LOAD) begin
+            regfile_load_from_mem = '1; 
+            regfile_wren = '1;
+        end 
+        else if (opcode == STORE) begin
+
+        end
+
         next_state = FETCH;
     end
+
+    ILLEGAL_INST: next_state = ILLEGAL_INST;
 
     default: next_state = FETCH;
 
