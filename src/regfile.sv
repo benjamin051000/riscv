@@ -25,7 +25,8 @@ always_ff @(posedge clk or posedge rst) begin
             registers[i] <= '0;
     end
     else begin
-        if (wr_en)
+        // Can't overwrite x0, it's a constant 0 always.
+        if (wr_en && wr_addr != 0)
             registers[wr_addr] <= wr_data;
     end
 end
