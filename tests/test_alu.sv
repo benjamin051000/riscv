@@ -4,7 +4,7 @@ import ALU_FNS::*;
 
 module test_alu;
 
-localparam NUM_TESTS = 1000;
+localparam NUM_TESTS = 10000;
 localparam WIDTH = 32;
 localparam longint MAX_INT = 2 ** WIDTH - 1; // For edge cases
 
@@ -50,14 +50,21 @@ endtask
 initial begin
     $timeformat(-9, 0, "ns");
 
-    repeat(NUM_TESTS) begin
+    // Test both states of funct7.
+    // This is a workaround since
+    // ModelSim doesn't have std::randomize()
+    funct7 = ADD_SRL;
+    repeat(NUM_TESTS / 2) begin
         a = $random;
         b = $random;
-        funct7 = ADD_SRL;
-        std::randomize(fn);
-
         verify();
+    end
 
+    funct7 = SUB_SRA; 
+    repeat(NUM_TESTS / 2) begin
+        a = $random;
+        b = $random;
+        verify();
     end
 
     // Test some edge cases
