@@ -19,8 +19,18 @@ initial begin : drive_inputs
     $timeformat(-9, 0, "ns");
 
     rst <= 1'b1;
-    for(int i = 0; i < 5; i++) @(posedge clk);
+    for(int i = 0; i < 5; i++) 
+		@(posedge clk);
+
     rst <= 1'b0;
+
+	// Check min/max values
+	en <= '1;
+	d <= '0;
+	@(posedge clk)
+
+	d <= {WIDTH{1'b1}};
+	@(posedge clk);
 
     for(int i = 0; i < NUM_TESTS; i++) begin
         d <= $random;
