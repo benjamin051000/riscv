@@ -2,7 +2,7 @@
 
 module test_register;
 
-localparam NUM_TESTS = 1000;
+localparam NUM_TESTS = 10000;
 localparam WIDTH = 32;
 
 logic clk, rst = 1'b1, en = 1'b0;
@@ -40,5 +40,10 @@ assert property (@(posedge clk) disable iff (rst) !en |=> $stable(q))
 
 always @(rst) assert (q == '0)
     else $error("q not 0 when reset.");
+
+cp_rst: cover property (@(posedge clk) rst);
+cp_en: cover property (@(posedge clk) en);
+cp_d_eq_0: cover property (@(posedge clk) d == 0);
+cp_d_eq_max: cover property (@(posedge clk) d == {WIDTH{1'b1}}); // Called the replication operator?
 
 endmodule
