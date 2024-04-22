@@ -1,10 +1,14 @@
+/*
+* This file is mainly to test the Quartus-generated RAM.
+* We know this should work fine, so this is mostly a sanity check.
+*/
 `timescale 1ns/10ps
 
 import LOAD_STORE_FNS::*;
 
 module test_ram;
 
-logic clk = 1'b0, rst;
+logic clk = 1'b0;
 logic wren = 1'b0;
 
 logic [10:0] addr;
@@ -28,28 +32,36 @@ initial begin : generate_clk
     end 
 end
 
+task automatic pulse_wren(input integer how_many_clk_pulses);
+	wren <= 1;
+	// Wait
+	for(int i = 0; i < how_many_clk_pulses; i++) begin
+		@(posedge clk);
+	end
+
+	wren <= 0;
+
+	@(posedge clk);
+endtask
+
+/*
+* Writes the following data:
+* 0: 1 
+* 1: 6
+* 2: a
+*/
 task automatic flash_mem();
     addr <= 0;
     wr_data <= 1;
-    wren <= 1'b1;
-    @(posedge clk);
-    wren <= 1'b0;
-    @(posedge clk);
+	pulse_wren(1);
 
-
-    addr <= 4;
+    addr <= 4; // Gets >> 2, so real addr is 1
     wr_data <= 6;
-    wren <= 1'b1;
-    @(posedge clk);
-    wren <= 1'b0;
-    @(posedge clk);
+	pulse_wren(1);
 
     addr <= 12;
-    wr_data <= 8'ha;
-    wren <= 1'b1;
-    @(posedge clk);
-    wren <= 1'b0;
-    @(posedge clk);
+    wr_data <= 8'ha; // TODO why did I write it like this?
+	pulse_wren(1);
 endtask //flash_mem
 
 task automatic delay(input int n);
@@ -57,9 +69,7 @@ task automatic delay(input int n);
 endtask
 
 initial begin : drive_inputs
-    rst <= 1'b1;
     flash_mem();
-    rst <= 1'b0;
 
     // Attempt to read from the addresses
     addr <= 0;
@@ -74,13 +84,12 @@ initial begin : drive_inputs
     // Test writes
     addr <= 8;
     wr_data <= 100;
-    wren <= 1'b1;
-    delay(3);
-    wren <= 1'b0;
-    delay(5);
+	pulse_wren(1);
 
     disable generate_clk;
     $display("Done.");
 end
+
+// assert property (@(posedge clk) )
 
 endmodule
