@@ -4,7 +4,7 @@ import ALU_FNS::*;
 
 module test_alu;
 
-localparam NUM_TESTS = 10000;
+localparam NUM_TESTS = 100000;
 localparam WIDTH = 32;
 localparam longint MAX_INT = 2 ** WIDTH - 1; // For edge cases
 
@@ -15,7 +15,7 @@ logic [WIDTH-1:0] out, correct;
 
 alu #(.WIDTH(WIDTH)) DUT (.*);
 
-
+// TODO Use a function to model this 
 task verify();
     case (fn)
         ADD_SUB: begin
@@ -46,8 +46,15 @@ task verify();
         $display("Error (time %0t): for function %s, out = %h instead of %h.", $realtime, fn.name(), out, correct);
 endtask
 
+// NOTE: Unfortunately, Questa starter edition doesn't allow covergroups.
+// covergroup cg;
+// 	cp_a: coverpoint a;
+// 	cp_b: coverpoint b;
+// 	input_cross: cross cp_a, cp_b;
+// endgroup
 
 initial begin
+	// cg cg_inst = new();
     $timeformat(-9, 0, "ns");
 
     // Test both states of funct7.
@@ -93,6 +100,7 @@ initial begin
 
 
     $display("Done.");
+	// $display("Coverage = %0.2f %%", cg_inst.get_inst_coverage());
 end
 
 endmodule
