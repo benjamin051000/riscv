@@ -38,7 +38,7 @@ word mem_addr, mem_wr_data, mem_rd_data, regfile_b, instruction;
 funct3_t mem_funct3;
 memory #(.WIDTH(WIDTH)) _mem (
     .clk(clk),
-    .rst(rst),
+	 .rst(rst),
     .addr(mem_addr),
     .wren(mem_wren),
     .wr_data(mem_wr_data),

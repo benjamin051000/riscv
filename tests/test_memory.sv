@@ -1,5 +1,6 @@
 `timescale 1ns/10ps
 
+import common::*;
 import LOAD_STORE_FNS::*;
 
 module test_memory;
@@ -10,13 +11,9 @@ logic clk = 1'b0, rst;
 logic [WIDTH-1:0] addr; // TODO replace if not useful
 logic wren = 1'b0;  // 0 -> rd, 1 -> wr
 logic [WIDTH-1:0] wr_data;
-funct3_t funct3 = WORD; // Determine size (word, halfword, byte)
+funct3_t funct3 = WORD; // Determine size (word, halfword, byte) TODO can I do LOAD_STORE_FNS.WORD ?
 logic [WIDTH-1:0] rd_data, outport;
-
-// Flash the memory
 logic flash_en;
-logic [$bits(addr)-1:0] flash_addr;
-logic [WIDTH-1:0] flash_data;
 
 memory #(.WIDTH(WIDTH)) DUT (.*);
 
@@ -29,33 +26,19 @@ initial begin : generate_clk
     end 
 end
 
-task automatic delay(input int n);
-    for(int i = 0; i < n; i++) @(posedge clk);
-endtask
-
-
-task automatic pulse_flash_en(input integer how_many_clk_pulses);
-	flash_en <= 1;
-	delay(how_many_clk_pulses);
-	flash_en <= 0;
-
-	@(posedge clk);
-endtask
-
-
 task automatic flash_mem();
-    flash_addr <= 0;
-    flash_data <= 12345;
-	pulse_flash_en(1);
+    addr <= 0;
+    wr_data <= 12345;
+	pulse(clk, flash_en, 1);
 
 
-    flash_addr <= 4;
-    flash_data <= 678910;
-	pulse_flash_en(1);
+    addr <= 4;
+    wr_data <= 678910;
+	pulse(clk, flash_en, 1);
 
-    flash_addr <= 12;
-    flash_data <= 8'hdeadbeef;
-	pulse_flash_en(1);
+    addr <= 12;
+    wr_data <= 32'hdeadbeef; // WARNING: Redundant digits in numeric literal
+	pulse(clk, flash_en, 1);
 
 endtask //flash_mem
 
@@ -66,31 +49,24 @@ initial begin : drive_inputs
 
     // Attempt to read from the addresses
     addr <= 0;
-    delay(3);
+    delay(clk, 3);
 
     addr <= 4;
-    delay(3);
+    delay(clk, 3);
 
     addr <= 12;
-    delay(3);
+    delay(clk, 3);
 
     // Test writes
     addr <= 8;
     wr_data <= 101010; // Decimal
     wren <= 1'b1;
-    delay(3);
+    delay(clk, 3);
     wren <= 1'b0;
-    delay(5);
-
-    
-    
-
-    // delay(20);
+    delay(clk, 5);
 
     disable generate_clk;
     $display("Done.");
 end
-
-
 
 endmodule

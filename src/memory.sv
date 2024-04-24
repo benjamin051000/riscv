@@ -10,10 +10,10 @@ module memory #(
     input funct3_t funct3, // Determine size (word, halfword, byte)
     output logic [WIDTH-1:0] rd_data,
 
-    // Flash the memory
+	// When the memory is in rst (rst = 1), assert flash_en 
+	// to write to the memory. 
+	// TODO What's an actual good way to load the memory? Bootloader? Research.
     input logic flash_en,
-    input logic [$bits(addr)-1:0] flash_addr, // WARNING: This will throw quartus warning 21074 since only [12:2] are used
-    input logic [WIDTH-1:0] flash_data,
 
     // Outport
     output logic [WIDTH-1:0] outport
@@ -23,8 +23,6 @@ module memory #(
 // logic [WIDTH-1:2] word_addr; // All but lowest 2
 logic [WIDTH-1:0] q;
 
-logic [10:0] ram_addr;
-logic [WIDTH-1:0] ram_wr_data;
 logic ram_wren;
 
 // Extract actual address and byte address
@@ -34,17 +32,15 @@ logic ram_wren;
 // TODO ram addr is 12 bits wide... not sure how SV handles this by default
 ram	ram_inst (
 	// .address(word_addr[12:2]),
-    .address(ram_addr),
+    .address(addr[10:0]), // TODO Implement byte-addressing. It currently doesn't exist.
 	.clock(clk),
-	.data(ram_wr_data),
+	.data(wr_data),
 	.wren(ram_wren),
 	.q(q)
 );
 
 /* assign ram_addr = flash_en ? flash_addr[12:2] : addr[12:2]; // NOTE: Be sure to bit shift by 2 to accomodate for this. At least until we have byte-addressing */
-assign ram_addr = flash_en ? flash_addr[10:0] : addr[10:0]; // for now, ignore the bit shift. see above
-assign ram_wr_data = flash_en ? flash_data : wr_data;
-assign ram_wren = flash_en | wren;
+assign ram_wren = (rst & flash_en) | wren;
 
 logic outport_en;
 register  #(.WIDTH(WIDTH)) _outport (
