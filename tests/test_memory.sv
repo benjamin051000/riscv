@@ -29,33 +29,35 @@ initial begin : generate_clk
     end 
 end
 
+task automatic delay(input int n);
+    for(int i = 0; i < n; i++) @(posedge clk);
+endtask
+
+
+task automatic pulse_flash_en(input integer how_many_clk_pulses);
+	flash_en <= 1;
+	delay(how_many_clk_pulses);
+	flash_en <= 0;
+
+	@(posedge clk);
+endtask
+
+
 task automatic flash_mem();
     flash_addr <= 0;
     flash_data <= 12345;
-    flash_en <= 1'b1;
-    @(posedge clk);
-    flash_en <= 1'b0;
-    @(posedge clk);
+	pulse_flash_en(1);
 
 
     flash_addr <= 4;
     flash_data <= 678910;
-    flash_en <= 1'b1;
-    @(posedge clk);
-    flash_en <= 1'b0;
-    @(posedge clk);
+	pulse_flash_en(1);
 
     flash_addr <= 12;
     flash_data <= 8'hdeadbeef;
-    flash_en <= 1'b1;
-    @(posedge clk);
-    flash_en <= 1'b0;
-    @(posedge clk);
-endtask //flash_mem
+	pulse_flash_en(1);
 
-task automatic delay(input int n);
-    for(int i = 0; i < n; i++) @(posedge clk);
-endtask
+endtask //flash_mem
 
 initial begin : drive_inputs
     rst <= 1'b1;

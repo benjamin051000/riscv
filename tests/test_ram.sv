@@ -4,6 +4,7 @@
 */
 `timescale 1ns/10ps
 
+import common::*;
 import LOAD_STORE_FNS::*;
 
 module test_ram;
@@ -32,18 +33,6 @@ initial begin : generate_clk
     end 
 end
 
-task automatic pulse_wren(input integer how_many_clk_pulses);
-	wren <= 1;
-	// Wait
-	for(int i = 0; i < how_many_clk_pulses; i++) begin
-		@(posedge clk);
-	end
-
-	wren <= 0;
-
-	@(posedge clk);
-endtask
-
 /*
 * Writes the following data:
 * 0: 1 
@@ -53,38 +42,41 @@ endtask
 task automatic flash_mem();
     addr <= 0;
     wr_data <= 1;
-	pulse_wren(1);
+	pulse(clk, wren, 1);
 
     addr <= 4; // Gets >> 2, so real addr is 1
     wr_data <= 6;
-	pulse_wren(1);
+	pulse(clk, wren, 1);
 
     addr <= 12;
     wr_data <= 8'ha; // TODO why did I write it like this?
-	pulse_wren(1);
+	pulse(clk, wren, 1);
+	$display("Flashed.");
 endtask //flash_mem
-
-task automatic delay(input int n);
-    for(int i = 0; i < n; i++) @(posedge clk);
-endtask
 
 initial begin : drive_inputs
     flash_mem();
 
     // Attempt to read from the addresses
     addr <= 0;
-    delay(3);
+    delay(clk, 3);
+	if (rd_data != 1) $display("Error");
 
     addr <= 4;
-    delay(3);
+    delay(clk, 3);
+	if (rd_data != 6) $display("Error");
 
     addr <= 12;
-    delay(3);
+    delay(clk, 3);
+	if (rd_data != 8'ha) $display("Error");
 
     // Test writes
     addr <= 8;
     wr_data <= 100;
-	pulse_wren(1);
+	pulse(clk, wren, 1);
+	delay(clk, 2);
+
+	if (rd_data != 100) $display("Error");
 
     disable generate_clk;
     $display("Done.");
