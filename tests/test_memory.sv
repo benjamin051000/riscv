@@ -72,6 +72,8 @@ initial begin : drive_inputs
 	pulse(clk, wren, 1);
 	if (outport != 32'hdeadbeef) $display("Error: Outport");
 
+	if (rd_data == 32'hdeadbeef) $display("Error: Writing to outport overwrote ram too.");
+
     disable generate_clk;
     $display("Done.");
 end

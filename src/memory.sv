@@ -40,17 +40,17 @@ ram	ram_inst (
 );
 
 /* assign ram_addr = flash_en ? flash_addr[12:2] : addr[12:2]; // NOTE: Be sure to bit shift by 2 to accomodate for this. At least until we have byte-addressing */
-assign ram_wren = (rst & flash_en) | wren;
+assign ram_wren = ((rst & flash_en) | wren) & addr != OUTPORT_ADDR;
 
-logic outport_en;
+logic outport_wren;
 register #(.WIDTH(WIDTH)) _outport (
     .clk(clk),
     .rst(rst),
-    .en(outport_en),
+    .en(outport_wren),
     .d(wr_data),
     .q(outport)
 );
-assign outport_en = wren & addr == OUTPORT_ADDR;
+assign outport_wren = wren & addr == OUTPORT_ADDR;
 
 // Handle byte-addressing
 // always_comb begin
