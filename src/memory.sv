@@ -43,14 +43,14 @@ ram	ram_inst (
 assign ram_wren = (rst & flash_en) | wren;
 
 logic outport_en;
-register  #(.WIDTH(WIDTH)) _outport (
+register #(.WIDTH(WIDTH)) _outport (
     .clk(clk),
     .rst(rst),
     .en(outport_en),
-    .d(q),
+    .d(wr_data),
     .q(outport)
 );
-assign outport_en = wren && addr == 16'hFFFC;
+assign outport_en = wren & addr == OUTPORT_ADDR;
 
 // Handle byte-addressing
 // always_comb begin

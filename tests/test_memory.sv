@@ -8,7 +8,7 @@ module test_memory;
 localparam WIDTH = 32;
 
 logic clk = 1'b0, rst;
-logic [WIDTH-1:0] addr; // TODO replace if not useful
+logic [WIDTH-1:0] addr; // TODO replace if not useful (<- what did I mean by that?)
 logic wren = 1'b0;  // 0 -> rd, 1 -> wr
 logic [WIDTH-1:0] wr_data;
 funct3_t funct3 = WORD; // Determine size (word, halfword, byte) TODO can I do LOAD_STORE_FNS.WORD ?
@@ -37,7 +37,7 @@ task automatic flash_mem();
 	pulse(clk, flash_en, 1);
 
     addr <= 12;
-    wr_data <= 32'hdeadbeef; // WARNING: Redundant digits in numeric literal
+    wr_data <= 32'hffffffff;
 	pulse(clk, flash_en, 1);
 
 endtask //flash_mem
@@ -50,20 +50,27 @@ initial begin : drive_inputs
     // Attempt to read from the addresses
     addr <= 0;
     delay(clk, 3);
+	if (rd_data != 12345) $display("Error: Read 12345");
 
     addr <= 4;
     delay(clk, 3);
+	if (rd_data != 678910) $display("Error: 678910");
 
     addr <= 12;
     delay(clk, 3);
+	if (rd_data != 32'hffffffff) $display("Error: 0xffffffff");
 
     // Test writes
     addr <= 8;
     wr_data <= 101010; // Decimal
-    wren <= 1'b1;
-    delay(clk, 3);
-    wren <= 1'b0;
-    delay(clk, 5);
+	pulse(clk, wren, 1);
+	if (rd_data != 101010) $display("Error: Write");
+
+	// Test outport
+	addr <= OUTPORT_ADDR;
+	wr_data <= 32'hdeadbeef;
+	pulse(clk, wren, 1);
+	if (outport != 32'hdeadbeef) $display("Error: Outport");
 
     disable generate_clk;
     $display("Done.");

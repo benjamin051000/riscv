@@ -94,6 +94,7 @@ typedef enum logic [31:25] {
 endpackage
 
 package LOAD_STORE_FNS;
+
     typedef enum logic [2:0] {
         BYTE = 3'b000,
         HALF = 3'b001,
@@ -102,4 +103,7 @@ package LOAD_STORE_FNS;
         BYTE_U = 3'b100,
         HALF_U = 3'b101 
     } funct3_t;
+
+	localparam OUTPORT_ADDR = 16'hfffc;
+
 endpackage
