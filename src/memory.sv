@@ -4,16 +4,15 @@ module memory #(
     parameter int WIDTH = 32
 ) (
     input logic clk, rst,
-    input logic [WIDTH-1:0] addr, // TODO replace if not useful
+    input logic [WIDTH-1:0] addr, flash_addr, 
     input logic wren,  // 0 -> rd, 1 -> wr
-    input logic [WIDTH-1:0] wr_data,
+    input logic [WIDTH-1:0] wr_data, flash_data,
     input funct3_t funct3, // Determine size (word, halfword, byte)
     output logic [WIDTH-1:0] rd_data,
 
-	// When the memory is in rst (rst = 1), assert flash_en 
+	// When the memory is in reset (rst = 1), assert flash_en 
 	// to write to the memory. 
-	// TODO What's an actual good way to load the memory? Bootloader? Research.
-    input logic flash_en,
+    input logic flash_en, 
 
     // Outport
     output logic [WIDTH-1:0] outport
@@ -22,25 +21,33 @@ module memory #(
 // logic [1:0] byte_num; // lowest 2 bits
 // logic [WIDTH-1:2] word_addr; // All but lowest 2
 logic [WIDTH-1:0] q;
-
+logic [10:0] addr_or_flash_addr;
 logic ram_wren;
+
+// Are we flashing the memory during reset?
+logic flashing;
+assign flashing = rst & flash_en;
 
 // Extract actual address and byte address
 // assign {word_addr, byte_num} = addr;
 
-// TODO Handle byte addressing
-// TODO ram addr is 12 bits wide... not sure how SV handles this by default
+logic [$bits(wr_data)-1:0] ram_wr_data;
+assign ram_wr_data = flashing ? flash_data : wr_data;
+
 ram	ram_inst (
 	// .address(word_addr[12:2]),
-    .address(addr[10:0]), // TODO Implement byte-addressing. It currently doesn't exist.
+    .address(addr_or_flash_addr), 
 	.clock(clk),
-	.data(wr_data),
+	.data(ram_wr_data),
 	.wren(ram_wren),
 	.q(q)
 );
 
-/* assign ram_addr = flash_en ? flash_addr[12:2] : addr[12:2]; // NOTE: Be sure to bit shift by 2 to accomodate for this. At least until we have byte-addressing */
-assign ram_wren = ((rst & flash_en) | wren) & addr != OUTPORT_ADDR;
+// TODO Implement byte-addressing. It currently doesn't exist.
+// TODO ram addr is 12 bits wide... not sure how SV handles this by default
+assign addr_or_flash_addr = flashing ? flash_addr[12:2] : addr[12:2];
+
+assign ram_wren = (flashing | wren) & addr != OUTPORT_ADDR;
 
 logic outport_wren;
 register #(.WIDTH(WIDTH)) _outport (
