@@ -1,23 +1,53 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /test_load/clk
-add wave -noupdate /test_load/rst
-add wave -noupdate /test_load/flash_en
-add wave -noupdate -radix hexadecimal /test_load/flash_addr
-add wave -noupdate -radix hexadecimal /test_load/flash_data
-add wave -noupdate -radix hexadecimal /test_load/outport
-add wave -noupdate -color Blue -radix hexadecimal -childformat {{{/test_load/DUT/_datapath/_regfile/regf/registers[31]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[30]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[29]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[28]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[27]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[26]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[25]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[24]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[23]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[22]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[21]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[20]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[19]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[18]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[17]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[16]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[15]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[14]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[13]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[12]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[11]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[10]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[9]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[8]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[7]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[6]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[5]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[4]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[3]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[2]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[1]} -radix hexadecimal} {{/test_load/DUT/_datapath/_regfile/regf/registers[0]} -radix hexadecimal}} -expand -subitemconfig {{/test_load/DUT/_datapath/_regfile/regf/registers[31]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[30]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[29]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[28]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[27]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[26]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[25]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[24]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[23]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[22]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[21]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[20]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[19]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[18]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[17]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[16]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[15]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[14]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[13]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[12]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[11]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[10]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[9]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[8]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[7]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[6]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[5]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[4]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[3]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[2]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[1]} {-color Blue -height 19 -radix hexadecimal} {/test_load/DUT/_datapath/_regfile/regf/registers[0]} {-color Blue -height 19 -radix hexadecimal}} /test_load/DUT/_datapath/_regfile/regf/registers
-add wave -noupdate -color Goldenrod /test_load/DUT/_controller/state
-add wave -noupdate -color Goldenrod /test_load/DUT/_controller/next_state
-add wave -noupdate -radix hexadecimal /test_load/DUT/_datapath/instruction
-add wave -noupdate /test_load/DUT/_controller/opcode
-add wave -noupdate -divider {New Divider}
-add wave -noupdate -radix hexadecimal /test_load/DUT/_datapath/_mem/addr
-add wave -noupdate -radix hexadecimal /test_load/DUT/_datapath/_mem/rd_data
+add wave -noupdate /test_rtype/clk
+add wave -noupdate /test_rtype/rst
+add wave -noupdate /test_rtype/flash_addr
+add wave -noupdate /test_rtype/flash_data
+add wave -noupdate /test_rtype/flash_en
+add wave -noupdate /test_rtype/outport
+add wave -noupdate -divider Controller
+add wave -noupdate /test_rtype/DUT/_controller/opcode
+add wave -noupdate /test_rtype/DUT/_controller/regfile_wren
+add wave -noupdate /test_rtype/DUT/_controller/ir_wren
+add wave -noupdate /test_rtype/DUT/_controller/pc_inc
+add wave -noupdate /test_rtype/DUT/_controller/mem_wren
+add wave -noupdate /test_rtype/DUT/_controller/regfile_load_from_mem
+add wave -noupdate /test_rtype/DUT/_controller/ram_raddr_31_20
+add wave -noupdate /test_rtype/DUT/_controller/state
+add wave -noupdate /test_rtype/DUT/_controller/next_state
+add wave -noupdate -divider Regfile
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/clk
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/rst
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/wr_en
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/addr_a
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/addr_b
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/wr_addr
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/wr_data
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/a
+add wave -noupdate -color Cyan /test_rtype/DUT/_datapath/_regfile/regf/b
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[18]}
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[17]}
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[16]}
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[15]}
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[14]}
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[13]}
+add wave -noupdate -color Cyan {/test_rtype/DUT/_datapath/_regfile/regf/registers[12]}
+add wave -noupdate -divider ALU
+add wave -noupdate /test_rtype/DUT/_datapath/_alu/fn
+add wave -noupdate /test_rtype/DUT/_datapath/_alu/funct7
+add wave -noupdate /test_rtype/DUT/_datapath/_alu/a
+add wave -noupdate /test_rtype/DUT/_datapath/_alu/b
+add wave -noupdate /test_rtype/DUT/_datapath/_alu/out
+add wave -noupdate -divider Datapath
+add wave -noupdate /test_rtype/DUT/_datapath/regfile_load_from_mem
+add wave -noupdate /test_rtype/DUT/_datapath/alu_out
+add wave -noupdate /test_rtype/DUT/_datapath/mem_rd_data
+add wave -noupdate /test_rtype/DUT/_datapath/regfile_wr_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {99405 ps} 0}
+WaveRestoreCursors {{Cursor 1} {308081 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 150
+configure wave -namecolwidth 198
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
@@ -31,4 +61,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {97537 ps} {150456 ps}
+WaveRestoreZoom {531067 ps} {608892 ps}

@@ -56,7 +56,9 @@ always_comb begin
 
     // Mux selectors
     ram_raddr_31_20 = '0;
-    regfile_load_from_mem = '1;
+	// In R_TYPE and I_TYPE instructions, this should be 0.
+	// In LOAD, STORE, and perhaps BRANCH_TYPE (TODO) this should be 1.
+    regfile_load_from_mem = '0;
     /* alu_b_31_20 = '0; */
 
     case(state)
@@ -109,7 +111,7 @@ always_comb begin
             // alu_b_31_20 = '1;
 
             // regfile_wren = '1;
-            // regfile_load_from_mem = '1;
+            regfile_load_from_mem = '1;
         end 
         else if (opcode == STORE) begin
             mem_wren = '1;
