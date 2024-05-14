@@ -45,7 +45,7 @@ task automatic flash_mem();
 	flash(11'd12,32'h01c02203); // lw tp, 28(zero) ; tp == x4
 
 	// Just a marker so I know where the flashing ends.
-	flash(11'd32, 32'hdeaddead); // One after last instruction
+	flash(11'd32, 32'hdeaddead); // One word after last instruction
 endtask //flash_mem
 
 initial begin : drive_inputs
@@ -53,7 +53,7 @@ initial begin : drive_inputs
     flash_mem();
     rst <= 1'b0;
 
-    for(int i = 0; i < 30; i++) @(posedge clk);
+    repeat(30) @(posedge clk);
 
     disable generate_clk;
     $display("Done.");
