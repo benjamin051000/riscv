@@ -21,7 +21,7 @@ module memory #(
 // logic [1:0] byte_num; // lowest 2 bits
 // logic [WIDTH-1:2] word_addr; // All but lowest 2
 logic [WIDTH-1:0] q;
-logic [10:0] addr_or_flash_addr;
+logic [10:0] addr_or_flash_addr; // RAM has 11 addr bits (I don't know why, space on device I guess?)
 logic ram_wren;
 
 // Are we flashing the memory during reset?
@@ -44,7 +44,10 @@ ram	ram_inst (
 );
 
 // TODO Implement byte-addressing. It currently doesn't exist.
-// TODO ram addr is 12 bits wide... not sure how SV handles this by default
+// TODO ram addr is 11 bits wide... not sure how SV handles this by default
+// This currently shifts the address by two, which is the implementation of a 
+// byte-addressable RAM. However, lb/sb should in theory just load the
+// corresponding word, since bits [1:0] are discarded here.
 assign addr_or_flash_addr = flashing ? flash_addr[12:2] : addr[12:2];
 
 assign ram_wren = (flashing | wren) & addr != OUTPORT_ADDR;
