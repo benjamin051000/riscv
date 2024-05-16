@@ -88,16 +88,12 @@ always_comb begin
         endcase
     end
 
-    R_TYPE: begin
+    R_TYPE | I_TYPE: begin
         // The datapath handles most of what needs to go down
         // TODO when we start muxing regfile/alu inputs, this
         // block will do more.
         // For now, just enable regfile writeback
         regfile_wren = '1;
-        next_state = FETCH;
-    end
-
-    I_TYPE: begin
         next_state = FETCH;
     end
 

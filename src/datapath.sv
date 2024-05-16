@@ -1,6 +1,7 @@
 import ALU_FNS::*;
 import LOAD_STORE_FNS::*;
 import rv32i_opcodes::rv32i_opcode_t;
+import rv32i_opcodes::OP_IMM;
 
 module datapath #(
     parameter int WIDTH = 32
@@ -87,8 +88,12 @@ alu_fn_t fn;
 funct7_t funct7;
 word alu_a, alu_b;
 alu #(.WIDTH(WIDTH)) _alu (.a(alu_a), .b(alu_b), .out(alu_out), .*);
+
 assign alu_a = regfile_a;
-assign alu_b = regfile_b; // TODO could be LOAD imm offset 31:20
+// If i-type, use the sign-extended 12-bit immediate value. That's pretty
+// much the only difference between i-type and r-type.
+// TODO what should the default value be?
+assign alu_b = opcode == OP_IMM ? 32'(signed'(instruction[31:20])) : regfile_b;
 assign fn = alu_fn_t'(instruction[14:12]);
 assign funct7 = funct7_t'(instruction[31:25]);
 
