@@ -1,4 +1,4 @@
-import rv32i_opcodes::regfile_load_t;
+import rv32i_opcodes::*;
 
 module regfile_wr_data_mux #(
 	parameter int WIDTH
