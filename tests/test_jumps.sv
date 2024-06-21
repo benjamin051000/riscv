@@ -44,7 +44,7 @@ initial begin : drive_inputs
     for(int i = 0; i < 3; i++) @(posedge clk);
     rst <= 1'b0;
 
-    repeat(20) @(posedge clk);
+    repeat(80) @(posedge clk);
 
     disable generate_clk;
     $display("Done.");

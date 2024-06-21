@@ -1,31 +1,34 @@
 import ALU_FNS::*;
 import LOAD_STORE_FNS::*;
-import rv32i_opcodes::OP_IMM;
+import rv32i_opcodes::*;
 
 module datapath #(
     parameter int WIDTH = 32
 ) (
-    input logic clk, rst,
-    // Register enables
-    input logic regfile_wren, ir_wren, pc_inc, mem_wren,
-    output rv32i_opcode_t opcode,
-    output logic[WIDTH-1:0] outport,
+	input logic clk, rst,
+	// Register enables
+	input logic regfile_wren, ir_wren, pc_inc, mem_wren,
+	output rv32i_opcode_t opcode,
+	output logic [WIDTH-1:0] outport,
 
-    // Mux selectors
-    input logic ram_raddr_31_20,
-	input regfile_load_t regfile_load_from_alu_mem_pcp4,
+	// Mux selectors
+	input logic ram_raddr_31_20,
+	input regfile_sel_t regfile_sel_from_alu_mem_pcp4,
+	input logic jumping,
 
-    input logic flash_en,
-    input logic [WIDTH-1:0] flash_addr,
-    input logic [WIDTH-1:0] flash_data
+	input logic flash_en,
+	input logic [WIDTH-1:0] flash_addr,
+	input logic [WIDTH-1:0] flash_data
 );
 
 // Type alias for convenience
 typedef logic [WIDTH-1:0] word; // TODO move to a common pkg
 
+// modelsim needs this declaration above all uses unlike Quartus
+word alu_out;
 
 // Program counter
-word pc_d, pc_q, pc_en;
+word pc_d, pc_q;
 register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
 // Something cool happens here: In RTL viewer, this synthesizes to 
 // an add between 1'h1 and pc_q[31:2]. Then, it concats the result with pc_q[1:0].
@@ -33,7 +36,14 @@ register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
 // Perhaps this saves resources or something. TODO look into why Quartus does this optimization. Is +1 more efficient than +4?
 // Update: It probably is more efficient because instead of requiring a 32-bit
 // adder, we get a 30-bit adder.
-assign pc_d = pc_q + 4;
+word jump_pc_d, next_inst_pc_d;
+
+// NOTE: - 4 because we've already set up + 4 for next instruction. 
+// TODO is there a nicer way to handle this?
+assign jump_pc_d = pc_q - 4 + alu_out; 
+
+assign next_inst_pc_d = pc_q + 4;
+assign pc_d = jumping ? jump_pc_d : next_inst_pc_d;
 
 
 // Memory
@@ -62,9 +72,6 @@ word ir_d;
 register #(.WIDTH(WIDTH)) _ir (.d(ir_d), .q(instruction), .en(ir_wren), .*);
 assign ir_d = mem_rd_data;
 assign opcode = rv32i_opcode_t'(instruction[6:0]);
-
-// TODO put someplace nicer, modelsim needs this declaration above all uses unlike Quartus
-word alu_out;
 
 // Register file
 logic [$clog2(WIDTH)-1:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
@@ -97,7 +104,7 @@ assign alu_a = regfile_a;
 // If i-type, use the sign-extended 12-bit immediate value. That's pretty
 // much the only difference between i-type and r-type.
 // TODO what should the default value be?
-assign alu_b = opcode == OP_IMM ? 32'(signed'(instruction[31:20])) : regfile_b;
+assign alu_b = opcode == OP_IMM | opcode == JALR ? 32'(signed'(instruction[31:20])) : regfile_b;
 assign fn = alu_fn_t'(instruction[14:12]);
 assign funct7 = funct7_t'(instruction[31:25]);
 

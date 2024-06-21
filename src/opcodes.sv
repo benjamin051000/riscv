@@ -30,7 +30,7 @@ typedef enum logic [1:0] {
 	FROM_ALU,
 	FROM_MEM,
 	FROM_PC_PLUS_4
-} regfile_load_t;
+} regfile_sel_t;
 
 endpackage
 

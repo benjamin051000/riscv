@@ -1,4 +1,4 @@
-import rv32i_opcodes::rv32i_opcode_t;
+import rv32i_opcodes::*;
 
 module top #(
     parameter int WIDTH = 32
@@ -12,7 +12,8 @@ module top #(
 );
 
 logic regfile_wren, ir_wren, pc_inc, mem_wren;
-logic regfile_load_from_mem, ram_raddr_31_20;
+logic ram_raddr_31_20, jumping;
+regfile_sel_t regfile_sel_from_alu_mem_pcp4;
 rv32i_opcode_t opcode;
 
 controller #(.WIDTH(WIDTH)) _controller (.*);

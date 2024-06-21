@@ -10,7 +10,9 @@ module controller #(
     output logic regfile_wren, ir_wren, pc_inc, mem_wren,
 
     // Mux selectors
-    output logic regfile_load_from_mem, ram_raddr_31_20 //alu_b_31_20
+    output logic ram_raddr_31_20, //alu_b_31_20
+    output logic jumping, 
+	output regfile_sel_t regfile_sel_from_alu_mem_pcp4
 );
 
 // State machine types
@@ -19,7 +21,12 @@ typedef enum logic[3:0] {
     DECODE,
     R_TYPE, // ALU op instructions (not immediate)
     I_TYPE, // ALU op instructions (immediates)
-    UJ_TYPE, // Unconditional jump
+    // UJ_TYPE, // Unconditional jump
+	JALR_TYPE,
+	JALR_TYPE2,
+	JALR_TYPE3,
+
+	JAL_TYPE,
     BRANCH_TYPE, // Conditional jump
 
     MEM_TYPE, // Load and store instructions
@@ -53,15 +60,16 @@ always_comb begin
     ir_wren = '0;
     pc_inc = '0;
     mem_wren = '0;
+	jumping = 0;
 
     // Mux selectors
     ram_raddr_31_20 = '0;
-	// In R_TYPE and I_TYPE instructions, this should be 0.
-	// In LOAD, STORE, and perhaps BRANCH_TYPE (TODO) this should be 1.
-    regfile_load_from_mem = '0;
+	// In R_TYPE and I_TYPE instructions, this should be FROM_ALU.
+	// In LOAD, STORE, and perhaps BRANCH_TYPE (TODO) this should be FROM_MEM.
+    regfile_sel_from_alu_mem_pcp4 = FROM_ALU;
     /* alu_b_31_20 = '0; */
 
-    case(state)
+    unique case(state)
     FETCH: begin
         // Get the next instruction from memory.
         // Tell IR to save the output of mem.
@@ -73,14 +81,20 @@ always_comb begin
     end
     
     DECODE: begin
-        case(opcode)
+		// NOTE: This state/cycle is when the register file loads appropriate
+		// values. I guess this state also executes in R and I type? 
+		// TODO investigate further.
+		// Next state/cycle (at least for R and I type) does writeback.
+        unique case(opcode)
             OP: next_state = R_TYPE;
 
             OP_IMM: next_state = I_TYPE;
 
             LOAD, STORE: next_state = MEM_TYPE;
 
-            JAL, JALR: next_state = UJ_TYPE;
+            // JAL, JALR: next_state = UJ_TYPE;
+			JALR: next_state = JALR_TYPE;
+			JAL: next_state = JAL_TYPE;
 
             BRANCH: next_state = BRANCH_TYPE;
 
@@ -107,7 +121,7 @@ always_comb begin
             // alu_b_31_20 = '1;
 
             // regfile_wren = '1;
-            regfile_load_from_mem = '1;
+            regfile_sel_from_alu_mem_pcp4 = FROM_MEM;
         end 
         else if (opcode == STORE) begin
             mem_wren = '1;
@@ -119,17 +133,49 @@ always_comb begin
         // Now the data should be ready on the ram bus.
         // Store in a reg.
         if (opcode == LOAD) begin
-            regfile_load_from_mem = '1; 
+            regfile_sel_from_alu_mem_pcp4 = FROM_MEM; 
             regfile_wren = '1;
         end 
         else if (opcode == STORE) begin
-
+			// TODO ?
         end
 
         next_state = FETCH;
     end
 
-    ILLEGAL_INST: next_state = ILLEGAL_INST;
+	JALR_TYPE: begin
+		// I-type, technically, but the results of the math will go elsewhere
+		// At this point, regfile is loaded and pc_d is correct for the jump.
+		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
+		regfile_wren = 1;
+		// pc = rs1 + imm (set LSB to 0)
+		jumping = 1;
+		pc_inc = 1;
+		next_state = JALR_TYPE2;
+	end
+
+	JALR_TYPE2: begin
+		// I-type, technically, but the results of the math will go elsewhere
+		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
+		regfile_wren = 1;
+		// pc = rs1 + imm (set LSB to 0)
+		jumping = 1;
+		// pc_inc = 1;
+		next_state = FETCH;
+	end
+
+	JAL_TYPE: begin
+		// This is a J-type, so we will need to de-mangle the bits when we do
+		// the addition.
+		// rd = pc + 4
+		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
+		regfile_wren = 1;
+		jumping = 1;
+		// pc = pc + offset (sign extended)
+		next_state = FETCH;
+	end
+
+    ILLEGAL_INST: next_state = ILLEGAL_INST; // TODO trap? Check spec
 
     default: next_state = FETCH;
 
