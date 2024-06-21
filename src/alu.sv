@@ -10,7 +10,7 @@ module alu #(
 );
     
 always_comb begin
-    case (fn)
+    unique case (fn)
 
     ADD_SUB: begin
         if (funct7 == SUB_SRA) // == 0100000b
