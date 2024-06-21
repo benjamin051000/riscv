@@ -1,6 +1,5 @@
 import ALU_FNS::*;
 import LOAD_STORE_FNS::*;
-import rv32i_opcodes::rv32i_opcode_t;
 import rv32i_opcodes::OP_IMM;
 
 module datapath #(
@@ -13,7 +12,8 @@ module datapath #(
     output logic[WIDTH-1:0] outport,
 
     // Mux selectors
-    input logic regfile_load_from_mem, ram_raddr_31_20,
+    input logic ram_raddr_31_20,
+	input regfile_load_t regfile_load_from_alu_mem_pcp4,
 
     input logic flash_en,
     input logic [WIDTH-1:0] flash_addr,
@@ -31,6 +31,8 @@ register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
 // an add between 1'h1 and pc_q[31:2]. Then, it concats the result with pc_q[1:0].
 // Since +4 doesn't affect lower two bits, it doesn't include them in the addition, just adds them back after the add.
 // Perhaps this saves resources or something. TODO look into why Quartus does this optimization. Is +1 more efficient than +4?
+// Update: It probably is more efficient because instead of requiring a 32-bit
+// adder, we get a 30-bit adder.
 assign pc_d = pc_q + 4;
 
 
@@ -81,7 +83,9 @@ regfile #(.WIDTH(WIDTH)) _regfile (
 assign regfile_addr_a = instruction[19:15];
 assign regfile_addr_b = instruction[24:20];
 assign regfile_wr_addr = instruction[11:7];
-assign regfile_wr_data = regfile_load_from_mem ? mem_rd_data : alu_out;
+// Moved this to its own module because it doesn't map nicely in RTL viewer...
+// and for modularity of course!
+regfile_wr_data_mux #($bits(regfile_wr_data)) _mux (.*);
 
 // ALU
 alu_fn_t fn;

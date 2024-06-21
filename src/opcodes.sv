@@ -14,8 +14,8 @@ typedef enum logic [6:0] {
     LOAD = 7'b0000011,
     STORE = 7'b0100011,
     BRANCH = 7'b1100011,
-    JALR = 7'b1100111,
     MISC_MEM = 7'b0001111, // FENCE, FENCE.I instructions
+    JALR = 7'b1100111,
     JAL = 7'b1101111,
     OP_IMM = 7'b0010011, // Immediate ALU instructions (ADDI, ANDI, etc.)
     OP = 7'b0110011, // Register ALU instructions (ADD, AND, etc.)
@@ -23,6 +23,14 @@ typedef enum logic [6:0] {
     AUIPC = 7'b0010111,
     LUI = 7'b0110111
 } rv32i_opcode_t;
+
+// This is to aid in the clarity of the mux that feeds into the
+// regfile_wr_data.
+typedef enum logic [1:0] {
+	FROM_ALU,
+	FROM_MEM,
+	FROM_PC_PLUS_4
+} regfile_load_t;
 
 endpackage
 
