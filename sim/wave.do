@@ -10,11 +10,14 @@ add wave -noupdate -divider Controller
 add wave -noupdate /test_jumps/DUT/_controller/opcode
 add wave -noupdate /test_jumps/DUT/_controller/mem_wren
 add wave -noupdate /test_jumps/DUT/_controller/ram_raddr_31_20
-add wave -noupdate /test_jumps/DUT/_controller/state
+add wave -noupdate -color {Cornflower Blue} /test_jumps/DUT/_controller/jumping
 add wave -noupdate /test_jumps/DUT/_controller/next_state
+add wave -noupdate /test_jumps/DUT/_controller/state
 add wave -noupdate -divider PC
-add wave -noupdate -color {Cornflower Blue} /test_jumps/DUT/_datapath/pc_d
+add wave -noupdate /test_jumps/DUT/_datapath/jump_pc_d
+add wave -noupdate /test_jumps/DUT/_datapath/next_inst_pc_d
 add wave -noupdate -color {Cornflower Blue} /test_jumps/DUT/_datapath/pc_inc
+add wave -noupdate -color {Cornflower Blue} /test_jumps/DUT/_datapath/pc_d
 add wave -noupdate -color {Cornflower Blue} /test_jumps/DUT/_datapath/pc_q
 add wave -noupdate -divider IR
 add wave -noupdate -color Magenta -radix hexadecimal /test_jumps/DUT/_datapath/ir_d
@@ -39,10 +42,10 @@ add wave -noupdate /test_jumps/DUT/_datapath/_alu/b
 add wave -noupdate /test_jumps/DUT/_datapath/_alu/out
 add wave -noupdate -divider Datapath
 add wave -noupdate /test_jumps/DUT/_datapath/alu_out
-add wave -noupdate /test_jumps/DUT/_datapath/mem_rd_data
-add wave -noupdate /test_jumps/DUT/_datapath/regfile_wr_data
+add wave -noupdate -color {Olive Drab} /test_jumps/DUT/_datapath/_mem/addr
+add wave -noupdate -color {Olive Drab} /test_jumps/DUT/_datapath/mem_rd_data
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {134892 ps} 0}
+WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 198
 configure wave -valuecolwidth 100
@@ -58,4 +61,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {108683 ps} {184759 ps}
+WaveRestoreZoom {0 ps} {705901 ps}
