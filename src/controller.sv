@@ -22,11 +22,11 @@ typedef enum logic[3:0] {
     R_TYPE, // ALU op instructions (not immediate)
     I_TYPE, // ALU op instructions (immediates)
     // UJ_TYPE, // Unconditional jump
-	JALR_TYPE,
-	JALR_TYPE2,
-	JALR_TYPE3,
 
+	JALR_TYPE,
 	JAL_TYPE,
+	DELAY_FOR_RAM,
+
     BRANCH_TYPE, // Conditional jump
 
     MEM_TYPE, // Load and store instructions
@@ -151,17 +151,7 @@ always_comb begin
 		// pc = rs1 + imm (set LSB to 0)
 		jumping = 1;
 		pc_inc = 1;
-		next_state = JALR_TYPE2;
-	end
-
-	JALR_TYPE2: begin
-		// I-type, technically, but the results of the math will go elsewhere
-		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
-		regfile_wren = 1;
-		// pc = rs1 + imm (set LSB to 0)
-		jumping = 1;
-		// pc_inc = 1;
-		next_state = FETCH;
+		next_state = DELAY_FOR_RAM;
 	end
 
 	JAL_TYPE: begin
@@ -170,8 +160,17 @@ always_comb begin
 		// rd = pc + 4
 		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
 		regfile_wren = 1;
+
 		jumping = 1;
+		pc_inc = 1;
 		// pc = pc + offset (sign extended)
+		next_state = DELAY_FOR_RAM;
+	end
+
+	DELAY_FOR_RAM: begin
+		// Used by JALR and JAL. They change PC in execute stage, which means
+		// the RAM now needs an additional cycle to read the next instruction.
+		// NOTE: I'm only 90% confident that nothing needs to happen here.
 		next_state = FETCH;
 	end
 
