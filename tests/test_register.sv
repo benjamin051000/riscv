@@ -2,8 +2,8 @@
 
 module test_register;
 
-localparam NUM_TESTS = 10000;
-localparam WIDTH = 32;
+localparam int NUM_TESTS = 10000;
+localparam int WIDTH = 32;
 
 logic clk, rst = 1'b1, en = 1'b0;
 logic[WIDTH-1:0] d, q;

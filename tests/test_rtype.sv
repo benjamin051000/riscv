@@ -3,7 +3,7 @@ import common::*;
 
 module test_rtype;
 
-localparam WIDTH = 32;
+localparam int WIDTH = 32;
 
 logic clk = 1'b0, rst;
 logic [WIDTH-1:0] flash_addr;

@@ -2,3 +2,4 @@
 -no-trailing-spaces
 -parameter-name-style
 -package-filename
+-line-length

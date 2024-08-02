@@ -4,8 +4,8 @@ import ALU_FNS::*;
 
 module test_alu;
 
-localparam NUM_TESTS = 100000;
-localparam WIDTH = 32;
+localparam int NUM_TESTS = 100000;
+localparam int WIDTH = 32;
 localparam longint MAX_INT = 2 ** WIDTH - 1; // For edge cases
 
 alu_fn_t fn;
@@ -16,8 +16,8 @@ logic [WIDTH-1:0] out, correct;
 alu #(.WIDTH(WIDTH)) DUT (.*);
 
 // TODO Use a function to model this 
-task verify();
-    case (fn)
+task automatic verify;
+    unique case (fn)
         ADD_SUB: begin
             if (funct7)
                 correct = a - b; 

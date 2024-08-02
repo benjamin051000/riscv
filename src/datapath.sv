@@ -78,14 +78,15 @@ logic [$clog2(WIDTH)-1:0] regfile_addr_a, regfile_addr_b, regfile_wr_addr;
 word regfile_wr_data;
 word regfile_a, wr_data;
 regfile #(.WIDTH(WIDTH)) _regfile (
-    clk, rst,
-    regfile_wren,
-    regfile_addr_a,
-    regfile_addr_b,
-    regfile_wr_addr,
-    regfile_wr_data,
-    regfile_a,
-    regfile_b
+	.clk(clk),
+	.rst(rst),
+	.wr_en(regfile_wren),
+	.addr_a(regfile_addr_a),
+	.addr_b(regfile_addr_b),
+	.wr_addr(regfile_wr_addr),
+	.wr_data(regfile_wr_data),
+	.a(regfile_a),
+	.b(regfile_b)
 );
 assign regfile_addr_a = instruction[19:15];
 assign regfile_addr_b = instruction[24:20];

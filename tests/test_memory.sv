@@ -5,7 +5,7 @@ import LOAD_STORE_FNS::*;
 
 module test_memory;
 
-localparam WIDTH = 32;
+localparam int WIDTH = 32;
 
 logic clk = 1'b0, rst;
 logic [WIDTH-1:0] addr, flash_addr; // TODO replace if not useful (<- what did I mean by that?)
