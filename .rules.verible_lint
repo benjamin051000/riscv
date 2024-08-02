@@ -1,3 +1,4 @@
 -no-tabs
 -no-trailing-spaces
 -parameter-name-style
+-package-filename
