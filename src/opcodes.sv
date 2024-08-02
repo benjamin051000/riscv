@@ -37,23 +37,23 @@ endpackage
 
 package R_I;
 
-localparam ADDI = 3'b000;
+localparam logic ADDI = 3'b000;
 
-localparam SLTI = 3'b010;
-localparam SLTIU = 3'b011;
+localparam logic SLTI = 3'b010;
+localparam logic SLTIU = 3'b011;
 
-localparam XORI = 3'b100;
-localparam ORI = 3'b110;
-localparam ANDI = 3'b111;
+localparam logic XORI = 3'b100;
+localparam logic ORI = 3'b110;
+localparam logic ANDI = 3'b111;
 
 // localparam SLLI = ;
 // localparam SRLI = ;
 // localparam SRAI = ;
 
 // load upper immediate
-localparam LUI   = 7'b0110111;
+localparam logic LUI   = 7'b0110111;
 // Add upper immediate to pc
-localparam AUIPC = 7'b0010111;
+localparam logic AUIPC = 7'b0010111;
 
 endpackage
 
@@ -61,9 +61,9 @@ endpackage
 package U_J;
 
 // jump and link
-localparam JAL   = 7'b1101111;
+localparam logic JAL   = 7'b1101111;
 // jump and link register
-localparam JALR  = 7'b1100111;
+localparam logic JALR  = 7'b1100111;
 
 endpackage
 
@@ -71,8 +71,8 @@ endpackage
 
 package LOAD_STORE;
 
-localparam LOAD  = 7'b0000011; 
-localparam STORE = 7'b0100011;
+localparam logic LOAD  = 7'b0000011; 
+localparam logic STORE = 7'b0100011;
 
 endpackage
 
@@ -112,6 +112,6 @@ package LOAD_STORE_FNS;
         HALF_U = 3'b101 
     } funct3_t;
 
-	localparam OUTPORT_ADDR = 16'hfffc;
+	localparam logic OUTPORT_ADDR = 16'hfffc;
 
 endpackage
