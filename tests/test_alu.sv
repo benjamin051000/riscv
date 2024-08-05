@@ -16,6 +16,9 @@ logic [WIDTH-1:0] out, correct;
 alu #(.WIDTH(WIDTH)) DUT (.*);
 
 // TODO Use a function to model this 
+int attempts = 0;
+int incorrect = 0;
+
 task automatic verify;
     unique case (fn)
         ADD_SUB: begin
@@ -42,8 +45,12 @@ task automatic verify;
 
     #10;
 
-    if (out != correct) 
+	if (out != correct) begin
         $display("Error (time %0t): for function %s, out = %h instead of %h.", $realtime, fn.name(), out, correct);
+		incorrect++;
+	end
+	attempts++;
+
 endtask
 
 // NOTE: Unfortunately, Questa starter edition doesn't allow covergroups.
@@ -60,6 +67,7 @@ initial begin
     // Test both states of funct7.
     // This is a workaround since
     // ModelSim doesn't have std::randomize()
+	fn = ADD_SUB;
     funct7 = ADD_SRL;
     repeat(NUM_TESTS / 2) begin
         a = $random;
@@ -99,7 +107,7 @@ initial begin
     verify(); // sub
 
 
-    $display("Done.");
+    $display("Done. Total correct: %d/%d", attempts - incorrect, attempts);
 	// $display("Coverage = %0.2f %%", cg_inst.get_inst_coverage());
 end
 
