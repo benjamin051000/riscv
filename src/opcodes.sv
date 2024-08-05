@@ -37,23 +37,25 @@ endpackage
 
 package R_I;
 
-localparam logic ADDI = 3'b000;
+// WARNING: Ensure the type has the right width. vsim (and maybe others) won't
+// infer it from the rvalue. I learned this the hard way.
+localparam logic [2:0] ADDI = 3'b000;
 
-localparam logic SLTI = 3'b010;
-localparam logic SLTIU = 3'b011;
+localparam logic [2:0] SLTI = 3'b010;
+localparam logic [2:0] SLTIU = 3'b011;
 
-localparam logic XORI = 3'b100;
-localparam logic ORI = 3'b110;
-localparam logic ANDI = 3'b111;
+localparam logic [2:0] XORI = 3'b100;
+localparam logic [2:0] ORI = 3'b110;
+localparam logic [2:0] ANDI = 3'b111;
 
 // localparam SLLI = ;
 // localparam SRLI = ;
 // localparam SRAI = ;
 
 // load upper immediate
-localparam logic LUI   = 7'b0110111;
+localparam logic [2:0] LUI   = 7'b0110111;
 // Add upper immediate to pc
-localparam logic AUIPC = 7'b0010111;
+localparam logic [2:0] AUIPC = 7'b0010111;
 
 endpackage
 
@@ -61,9 +63,9 @@ endpackage
 package U_J;
 
 // jump and link
-localparam logic JAL   = 7'b1101111;
+localparam logic [2:0] JAL   = 7'b1101111;
 // jump and link register
-localparam logic JALR  = 7'b1100111;
+localparam logic [2:0] JALR  = 7'b1100111;
 
 endpackage
 
@@ -71,8 +73,8 @@ endpackage
 
 package LOAD_STORE;
 
-localparam logic LOAD  = 7'b0000011; 
-localparam logic STORE = 7'b0100011;
+localparam logic [2:0] LOAD  = 7'b0000011; 
+localparam logic [2:0] STORE = 7'b0100011;
 
 endpackage
 
@@ -112,6 +114,6 @@ package LOAD_STORE_FNS;
         HALF_U = 3'b101 
     } funct3_t;
 
-	localparam logic OUTPORT_ADDR = 16'hfffc;
+	localparam logic [31:0] OUTPORT_ADDR = 32'hfffc;
 
 endpackage
