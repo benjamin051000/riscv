@@ -55,6 +55,7 @@ task automatic flash_mem();
 endtask //flash_mem
 
 initial begin : drive_inputs
+	$display("Any errors will be printed.");
     flash_mem();
 
     // Attempt to read from the addresses
