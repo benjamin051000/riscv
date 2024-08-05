@@ -33,8 +33,8 @@ task automatic flash_mem();
 	// an increment loop
 	flash(11'd0, 32'h00c64633); // xor  a2, a2, a2; set it to 0
 	flash(11'd4, 32'h00160613); // addi a2, a2, 1 ; increment
-	// flash(11'd8, 32'hffc00067); // jalr zero, -4 ; back to the loop
-	flash(11'd8, 32'hffdff06f); // jal zero, -4 ; back to the loop
+	flash(11'd8, 32'hffc00067); // jalr zero, -4 ; back to the loop
+	// flash(11'd8, 32'hffdff06f); // jal zero, -4 ; back to the loop
 
 	// Test two jumps
 	// flash(11'd0, 32'h00c00067); // jalr zero, 12 
