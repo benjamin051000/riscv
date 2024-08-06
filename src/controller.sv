@@ -156,7 +156,7 @@ always_comb begin
 
 	JAL_TYPE: begin
 		// This is a J-type, so we will need to de-mangle the bits when we do
-		// the addition.
+		// the addition. TODO
 		// rd = pc + 4
 		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
 		regfile_wren = 1;

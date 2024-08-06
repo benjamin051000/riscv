@@ -33,8 +33,10 @@ task automatic flash_mem();
 	// an increment loop
 	flash(11'd0, 32'h00c64633); // xor  a2, a2, a2; set it to 0
 	flash(11'd4, 32'h00160613); // addi a2, a2, 1 ; increment
-	flash(11'd8, 32'hffc00067); // jalr zero, -4 ; back to the loop
-	// flash(11'd8, 32'hffdff06f); // jal zero, -4 ; back to the loop
+	// TODO not working because it uses J-type
+	// flash(11'd8, 32'hffc00067); // jalr zero, -4 ; back to the loop
+	// This one works since it's "I-type"
+	flash(11'd8, 32'hffdff06f); // jal zero, -4 ; back to the loop
 
 	// Test two jumps
 	// flash(11'd0, 32'h00c00067); // jalr zero, 12 
@@ -47,7 +49,7 @@ initial begin : drive_inputs
     for(int i = 0; i < 3; i++) @(posedge clk);
     rst <= 1'b0;
 
-    repeat(50) @(posedge clk);
+    repeat(100) @(posedge clk);
 
     disable generate_clk;
     $display("Done.");
