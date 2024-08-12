@@ -53,9 +53,9 @@ localparam logic [2:0] ANDI = 3'b111;
 // localparam SRAI = ;
 
 // load upper immediate
-localparam logic [2:0] LUI   = 7'b0110111;
+localparam logic [6:0] LUI   = 7'b0110111;
 // Add upper immediate to pc
-localparam logic [2:0] AUIPC = 7'b0010111;
+localparam logic [6:0] AUIPC = 7'b0010111;
 
 endpackage
 
@@ -63,9 +63,9 @@ endpackage
 package U_J;
 
 // jump and link
-localparam logic [2:0] JAL   = 7'b1101111;
+localparam logic [6:0] JAL   = 7'b1101111;
 // jump and link register
-localparam logic [2:0] JALR  = 7'b1100111;
+localparam logic [6:0] JALR  = 7'b1100111;
 
 endpackage
 
@@ -73,8 +73,8 @@ endpackage
 
 package LOAD_STORE;
 
-localparam logic [2:0] LOAD  = 7'b0000011; 
-localparam logic [2:0] STORE = 7'b0100011;
+localparam logic [6:0] LOAD  = 7'b0000011; 
+localparam logic [6:0] STORE = 7'b0100011;
 
 endpackage
 

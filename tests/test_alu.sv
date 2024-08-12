@@ -6,7 +6,7 @@ module test_alu;
 
 localparam int NUM_TESTS = 100000;
 localparam int WIDTH = 32;
-localparam longint MAX_INT = 2 ** WIDTH - 1; // For edge cases
+localparam logic [WIDTH-1:0] MAX_INT = 2 ** WIDTH - 1; // For edge cases
 
 alu_fn_t fn;
 funct7_t funct7; // For Integer Register-Register Operations
@@ -22,7 +22,7 @@ int incorrect = 0;
 task automatic verify;
     unique case (fn)
         ADD_SUB: begin
-            if (funct7)
+            if (funct7 == SUB_SRA)
                 correct = a - b; 
             else
                 correct = a + b;  // This appears to be signed
@@ -32,10 +32,10 @@ task automatic verify;
         OR: correct = a | b;
         XOR: correct = a ^ b;
         SLL: correct = a << b;
-        SLT: correct = a != 0;
-        SLTU: correct = a != 0;
+        SLT: correct = WIDTH'(a < b);
+        SLTU: correct = WIDTH'(a < b);
         SRL_SRA: begin
-            if (funct7)
+            if (funct7 == SUB_SRA) 
                 correct = a >>> b;
             else
                 correct = a >> b;
@@ -62,7 +62,7 @@ endtask
 
 initial begin
 	// cg cg_inst = new();
-    $timeformat(-9, 0, "ns");
+    // $timeformat(-9, 0, "ns");
 
     // Test both states of funct7.
     // This is a workaround since
@@ -87,7 +87,6 @@ initial begin
     b = 1;
     fn = ADD_SUB;
     funct7 = ADD_SRL;
-
     verify();
 
     // Test 2s complement

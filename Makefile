@@ -53,7 +53,7 @@ VERILATOR_FLAGS += --coverage
 # Input files for Verilator
 ifneq ($(shell which fd),)
 # Regex for any file ending in .v, .sv, .svh
-VERILATOR_INPUT = src/opcodes.sv $(shell fd '.*\.s?vh?')
+VERILATOR_INPUT = -f src/opcodes.sv $(shell fd '.*\.s?vh?')
 else
 $(error TODO impl gnu find)
 endif

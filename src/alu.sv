@@ -34,9 +34,9 @@ always_comb begin
             out = a >> b;
     end 
 
-    SLT: out = a != 0; // TODO what does this actually output?
+    SLT: out = WIDTH'(a < b); 
 
-    SLTU: out = a != 0; // TODO needs to be unsigned
+    SLTU: out = WIDTH'(a < b); // TODO needs to be unsigned
 
     // default: out = '0;
 
