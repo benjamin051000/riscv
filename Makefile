@@ -11,6 +11,7 @@
 #
 ######################################################################
 # Check for sanity to avoid later confusion
+# TODO necessary?
 
 ifneq ($(words $(CURDIR)),1)
  $(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
@@ -97,6 +98,16 @@ run:
 	@echo "To see waveforms, open vlt_dump.vcd in a waveform viewer"
 	@echo
 
+./obj_dir/V$(MODULE):
+	@touch ./obj_dir/V$(MODULE)
+
+waveform.vcd: ./obj_dir/V$(MODULE)
+	@echo "-- Simulating... --------------------"
+	@./obj_dir/V$(MODULE)
+
+.PHONY: waves
+waves: waveform.vcd
+	gtkwave waveform.vcd
 
 ######################################################################
 # Other targets
