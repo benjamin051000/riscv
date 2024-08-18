@@ -88,6 +88,7 @@ endpackage
 
 package ALU_FNS;
 
+// this is the funct3_t field
 typedef enum logic [2:0]  {
     ADD_SUB = 3'h0,
 
@@ -100,6 +101,7 @@ typedef enum logic [2:0]  {
 
     SLL = 3'h1,
     SRL_SRA = 3'h5
+	// 6, 7 unused
 } alu_fn_t;
 
 // funct7 is the top 7 bits in Integer Reg-Reg Operations (pg. 19)
@@ -107,6 +109,17 @@ typedef enum logic [31:25] {
     ADD_SRL = '0,
     SUB_SRA = 7'b0100000//(1'b1 << 5)
 } funct7_t;
+
+// From RISC-V unprivileged spec. pg 554, RV32/64G Instruction Set Listings
+typedef enum logic [2:0] {
+	BEQ = 3'b000,
+	BNE = 3'b001,
+	// 010, 011 skipped? 
+	BLT = 3'b100,
+	BGE = 3'b101,
+	BLTU = 3'b110,
+	BGEU = 3'b111
+} alu_branches_funct3_t;
 
 endpackage
 

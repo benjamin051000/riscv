@@ -1,15 +1,16 @@
 import ALU_FNS::*;
 
 module alu #(
-    parameter int WIDTH = 4 
+    parameter int WIDTH
 ) (
     input alu_fn_t fn,
     input funct7_t funct7, // For Integer Register-Register Operations
     input logic [WIDTH-1:0] a, b, 
-    output logic [WIDTH-1:0] out
+    output logic [WIDTH-1:0] out,
+	output logic take_branch
 );
     
-always_comb begin
+always_comb begin: alu_outputs
     unique case (fn)
 
     ADD_SUB: begin
@@ -43,4 +44,21 @@ always_comb begin
 
     endcase
 end
+
+always_comb begin: branch_outputs
+	alu_branches_funct3_t b_fn = fn;
+
+	// TODO can this just use "out"?
+	take_branch = 0;
+
+	unique case (b_fn) 
+	BEQ: take_branch = a == b; // NOTE: == instead of === since === is for 4-state equality, which I presume isn't synthesizable.
+	BNE: take_branch = a != b;
+	BLT: take_branch = a < b;
+	BGE: take_branch = a >= b;
+	BLTU: take_branch = unsigned'(a) < unsigned'(b); // TODO verify this is correct
+	BGEU: take_branch = unsigned'(a) >= unsigned'(b);
+	endcase
+end
+
 endmodule
