@@ -1,4 +1,5 @@
 import rv32i_opcodes::*;
+import U_J::*;
 
 module controller #(
     parameter int WIDTH
@@ -11,7 +12,7 @@ module controller #(
 
     // Mux selectors
     output logic ram_raddr_31_20, //alu_b_31_20
-    output logic jumping, 
+    output jump_type_t jumping, 
 	output regfile_sel_t regfile_sel_from_alu_mem_pcp4
 );
 
@@ -60,7 +61,7 @@ always_comb begin
     ir_wren = '0;
     pc_inc = '0;
     mem_wren = '0;
-	jumping = 0;
+	jumping = NOT_JUMPING;
 
     // Mux selectors
     ram_raddr_31_20 = '0;
@@ -146,10 +147,15 @@ always_comb begin
 	JALR_TYPE: begin
 		// I-type, technically, but the results of the math will go elsewhere
 		// At this point, regfile is loaded and pc_d is correct for the jump.
+
+		// Store the following instruction (PC + 4) (before jumping) into the
+		// specified regfile in case we want to return (e.g., from
+		// a subroutine) later.
 		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
 		regfile_wren = 1;
+
 		// pc = rs1 + imm (set LSB to 0)
-		jumping = 1;
+		jumping = JUMP_I_TYPE;
 		pc_inc = 1;
 		next_state = DELAY_FOR_RAM;
 	end
@@ -158,10 +164,14 @@ always_comb begin
 		// This is a J-type, so we will need to de-mangle the bits when we do
 		// the addition. TODO
 		// rd = pc + 4
+
+		// Store the following instruction (PC + 4) (before jumping) into the
+		// specified regfile in case we want to return (e.g., from
+		// a subroutine) later.
 		regfile_sel_from_alu_mem_pcp4 = FROM_PC_PLUS_4;
 		regfile_wren = 1;
 
-		jumping = 1;
+		jumping = JUMP_J_TYPE;
 		pc_inc = 1;
 		// pc = pc + offset (sign extended)
 		next_state = DELAY_FOR_RAM;

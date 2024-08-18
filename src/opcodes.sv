@@ -63,9 +63,16 @@ endpackage
 package U_J;
 
 // jump and link
-localparam logic [6:0] JAL   = 7'b1101111;
+// NOTE: These are already defined above.
+// localparam logic [6:0] JAL   = 7'b1101111;
 // jump and link register
-localparam logic [6:0] JALR  = 7'b1100111;
+// localparam logic [6:0] JALR  = 7'b1100111;
+
+typedef enum logic [1:0] {
+	NOT_JUMPING,
+	JUMP_I_TYPE,
+	JUMP_J_TYPE
+} jump_type_t;
 
 endpackage
 

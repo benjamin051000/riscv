@@ -1,6 +1,7 @@
 import ALU_FNS::*;
 import LOAD_STORE_FNS::*;
 import rv32i_opcodes::*;
+import U_J::*;
 
 module datapath #(
     parameter int WIDTH = 32
@@ -14,7 +15,7 @@ module datapath #(
 	// Mux selectors
 	input logic ram_raddr_31_20,
 	input regfile_sel_t regfile_sel_from_alu_mem_pcp4,
-	input logic jumping,
+	input jump_type_t jumping,
 
 	input logic flash_en,
 	input logic [WIDTH-1:0] flash_addr,
@@ -38,16 +39,43 @@ register #(.WIDTH(WIDTH)) _pc (.d(pc_d), .q(pc_q), .en(pc_inc), .*);
 // adder, we get a 30-bit adder.
 word jump_pc_d, next_inst_pc_d;
 
+// For J-type jumps (e.g., JAL)
+word jump_j_type_pc_d;
+
+// Instruction register (IR) output.
+word instruction;
+
 // NOTE: - 4 because we've already set up + 4 for next instruction. 
 // TODO is there a nicer way to handle this?
 assign jump_pc_d = pc_q - 4 + alu_out; 
-
 assign next_inst_pc_d = pc_q + 4;
-assign pc_d = jumping ? jump_pc_d : next_inst_pc_d;
+// J-type has a weird immediate value encoding. See RISC-V unprivileged spec
+// for details.
+// TODO figure out how to sign-extend this instruction thing
+word ir_j_arrangement;
+assign ir_j_arrangement = WIDTH'(signed'({instruction[31], instruction[19:12], instruction[20], instruction[30:21]}));
+assign jump_j_type_pc_d = pc_q - 4 + ir_j_arrangement;
+
+always_comb begin: next_pc
+	unique case (jumping)
+	NOT_JUMPING: begin
+		pc_d = next_inst_pc_d;
+	end
+
+	JUMP_I_TYPE: begin
+		pc_d = jump_pc_d;
+	end
+
+	JUMP_J_TYPE: begin
+		pc_d = jump_j_type_pc_d;
+	end
+		
+	endcase
+end
 
 
 // Memory
-word mem_addr, mem_wr_data, mem_rd_data, regfile_b, instruction;
+word mem_addr, mem_wr_data, mem_rd_data, regfile_b;
 funct3_t mem_funct3;
 memory #(.WIDTH(WIDTH)) _mem (
     .clk(clk),
