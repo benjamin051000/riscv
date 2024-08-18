@@ -71,7 +71,8 @@ package U_J;
 typedef enum logic [1:0] {
 	NOT_JUMPING,
 	JUMP_I_TYPE,
-	JUMP_J_TYPE
+	JUMP_J_TYPE,
+	BRANCH_B_TYPE
 } jump_type_t;
 
 endpackage

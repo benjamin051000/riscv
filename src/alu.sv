@@ -1,7 +1,7 @@
 import ALU_FNS::*;
 
 module alu #(
-    parameter int WIDTH
+    parameter int WIDTH = 32
 ) (
     input alu_fn_t fn,
     input funct7_t funct7, // For Integer Register-Register Operations
@@ -46,7 +46,8 @@ always_comb begin: alu_outputs
 end
 
 always_comb begin: branch_outputs
-	alu_branches_funct3_t b_fn = fn;
+	// NOTE: This must be explicitly automatic...
+	automatic alu_branches_funct3_t b_fn = alu_branches_funct3_t'(fn);
 
 	// TODO can this just use "out"?
 	take_branch = 0;
