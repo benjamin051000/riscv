@@ -35,13 +35,13 @@ task automatic flash_mem();
 	flash(11'd36, 32'h00000005);
 
 	// an increment loop
-	flash(11'd0, 32'h00c64633); // incr: xor  a2, a2, a2; set it to 0
-	flash(11'd4, 32'h00160613); // addi a2, a2, 1 ; increment
+	flash(11'd4, 32'h00c64633); // incr: xor  a2, a2, a2; set it to 0
+	flash(11'd8, 32'h00160613); // addi a2, a2, 1 ; increment
 
-	flash(11'd8, 32'hfef60ce3); // blt a2, a5, -8 ; blt a2, a5, incr
+	flash(11'd12, 32'hfef60ce3); // blt a2, a5, -8 ; blt a2, a5, incr
 	// flash(11'd8, 32'hfec78ce3); // blt a5, a2, -8 ; opposite just in case I got it wrong
 
-	flash(11'd12, 32'h0000006f); // jal zero, 0 ; loop: j loop basically
+	flash(11'd16, 32'h0000006f); // jal zero, 0 ; loop: j loop basically
 
 endtask //flash_mem
 
