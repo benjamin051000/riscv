@@ -12,6 +12,8 @@ module datapath #(
 	output rv32i_opcode_t opcode,
 	output logic [WIDTH-1:0] outport,
 
+	output logic take_branch,
+
 	// Mux selectors
 	input logic ram_raddr_31_20,
 	input regfile_sel_t regfile_sel_from_alu_mem_pcp4,
@@ -51,10 +53,17 @@ assign jump_pc_d = pc_q - 4 + alu_out;
 assign next_inst_pc_d = pc_q + 4;
 // J-type has a weird immediate value encoding. See RISC-V unprivileged spec
 // for details.
-// TODO figure out how to sign-extend this instruction thing
 word ir_j_arrangement;
+// TODO should this have a 0 on the very bottom? I think it should...
 assign ir_j_arrangement = WIDTH'(signed'({instruction[31], instruction[19:12], instruction[20], instruction[30:21]}));
 assign jump_j_type_pc_d = pc_q - 4 + ir_j_arrangement;
+
+word ir_b_arrangement;
+assign ir_b_arrangement = WIDTH'(signed'(
+	{instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0} // TODO should this zero be here?
+));
+word jump_b_type_pc_d;
+assign jump_b_type_pc_d = pc_q - 4 + ir_b_arrangement;
 
 always_comb begin: next_pc
 	unique case (jumping)
@@ -68,6 +77,10 @@ always_comb begin: next_pc
 
 	JUMP_J_TYPE: begin
 		pc_d = jump_j_type_pc_d;
+	end
+
+	BRANCH_B_TYPE: begin
+		pc_d = jump_b_type_pc_d;
 	end
 		
 	endcase
