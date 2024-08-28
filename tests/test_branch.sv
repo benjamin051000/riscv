@@ -31,7 +31,7 @@ endtask
 task automatic flash_mem();
 
 	// Load comparison value 
-	flash(11'd0, 32'h02802783); // lw a5, 36(zero) # a5 == x15
+	flash(11'd0, 32'h02402783); // lw a5, 36(zero) # a5 == x15
 	flash(11'd36, 32'h00000005);
 
 	// an increment loop
