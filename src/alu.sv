@@ -59,6 +59,7 @@ always_comb begin: branch_outputs
 	BGE: take_branch = a >= b;
 	BLTU: take_branch = unsigned'(a) < unsigned'(b); // TODO verify this is correct
 	BGEU: take_branch = unsigned'(a) >= unsigned'(b);
+	default: take_branch = 0;
 	endcase
 end
 

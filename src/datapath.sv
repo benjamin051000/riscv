@@ -12,6 +12,8 @@ module datapath #(
 	output rv32i_opcode_t opcode,
 	output logic [WIDTH-1:0] outport,
 
+	output logic take_branch,
+
 	// Mux selectors
 	input logic ram_raddr_31_20,
 	input regfile_sel_t regfile_sel_from_alu_mem_pcp4,
@@ -27,7 +29,6 @@ typedef logic [WIDTH-1:0] word; // TODO move to a common pkg
 
 // modelsim needs this declaration above all uses unlike Quartus
 word alu_out;
-logic take_branch; // from the ALU
 
 // Program counter
 word pc_d, pc_q;

@@ -15,6 +15,7 @@ module top #(
 logic regfile_wren, ir_wren, pc_inc, mem_wren;
 logic ram_raddr_31_20;
 jump_type_t jumping;
+logic take_branch;
 regfile_sel_t regfile_sel_from_alu_mem_pcp4;
 rv32i_opcode_t opcode;
 

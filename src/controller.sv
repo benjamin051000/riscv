@@ -6,6 +6,7 @@ module controller #(
 ) (
     input logic clk, rst,
     input rv32i_opcode_t opcode,
+	input logic take_branch,
 
     // Register enables
     output logic regfile_wren, ir_wren, pc_inc, mem_wren,
@@ -186,7 +187,18 @@ always_comb begin
 
     ILLEGAL_INST: next_state = ILLEGAL_INST; // TODO trap? Check spec
 
-    default: next_state = FETCH;
+	BRANCH_TYPE: begin
+		if (take_branch) begin
+			jumping = BRANCH_B_TYPE;
+			pc_inc = 1;
+			next_state = DELAY_FOR_RAM;
+		end 
+		else begin
+			next_state = FETCH;
+		end
+	end
+
+    default: next_state = FETCH; // TODO should probably be ILLEGAL_INST
 
     endcase
 end
