@@ -4,6 +4,7 @@ I want to learn about computer architecture by implementing a fully-functional R
 # Roadmap
 | Milestone | Status |
 | - | - | 
+| Verilator | 🛠️ in progress | 
 | RV32I | 🛠️ in progress | 
 | RV32G (RV32IMAFD) | 📋 planned | 
 | Canonical pipeline | 📋 planned | 
