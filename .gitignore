@@ -40,3 +40,5 @@ programs/load.mif
 # .mif temporary files (I guess)
 programs/load.ver
 
+# Verilator object artifact directory
+obj_dir/
