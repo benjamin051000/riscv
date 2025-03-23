@@ -11,7 +11,6 @@
 #
 ######################################################################
 # Check for sanity to avoid later confusion
-# TODO necessary?
 
 ifneq ($(words $(CURDIR)),1)
  $(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
@@ -33,7 +32,7 @@ VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
 endif
 
 # Generate C++ in executable form
-VERILATOR_FLAGS += -cc --exe
+VERILATOR_FLAGS += -cc --exe --build
 # Generate makefile dependencies (not shown as complicates the Makefile)
 #VERILATOR_FLAGS += -MMD
 # Optimize
@@ -52,15 +51,8 @@ VERILATOR_FLAGS += --coverage
 #VERILATOR_FLAGS += --gdbbt
 
 # Input files for Verilator
-ifneq ($(shell which fd),)
-# Regex for any file ending in .v, .sv, .svh
-VERILATOR_INPUT = -f src/opcodes.sv $(shell fd '.*\.s?vh?')
-else
-$(error TODO impl gnu find)
-endif
-
-#VERILATOR_INPUT = -f input.vc top.v sim_main.cpp
-
+VERILATOR_INPUT = -I inc/opcodes.sv $(shell find src -name '*.sv')
+VERILATOR_INPUT += config.vlt
 
 ######################################################################
 default: run
@@ -80,7 +72,7 @@ run:
 # 2. Or, run the make rules Verilator does:
 #	$(MAKE) -j -C obj_dir -f Vtop.mk
 # 3. Or, call a submakefile where we can override the rules ourselves:
-	$(MAKE) -j -C obj_dir -f ../Makefile_obj
+	# $(MAKE) -j -C obj_dir -f ../Makefile_obj
 
 	@echo
 	@echo "-- RUN ---------------------"
@@ -98,16 +90,6 @@ run:
 	@echo "To see waveforms, open vlt_dump.vcd in a waveform viewer"
 	@echo
 
-./obj_dir/V$(MODULE):
-	@touch ./obj_dir/V$(MODULE)
-
-waveform.vcd: ./obj_dir/V$(MODULE)
-	@echo "-- Simulating... --------------------"
-	@./obj_dir/V$(MODULE)
-
-.PHONY: waves
-waves: waveform.vcd
-	gtkwave waveform.vcd
 
 ######################################################################
 # Other targets
