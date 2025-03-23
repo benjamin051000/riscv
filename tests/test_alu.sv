@@ -12,6 +12,7 @@ alu_fn_t fn;
 funct7_t funct7; // For Integer Register-Register Operations
 logic [WIDTH-1:0] a, b;
 logic [WIDTH-1:0] out, correct;
+logic take_branch;
 
 alu #(.WIDTH(WIDTH)) DUT (.*);
 
@@ -25,7 +26,7 @@ task automatic verify;
             if (funct7 == SUB_SRA)
                 correct = a - b; 
             else
-                correct = a + b;  // This appears to be signed
+                correct = a + b + 1;  // This appears to be signed
         end 
 
         AND: correct = a & b;
@@ -53,7 +54,7 @@ task automatic verify;
 
 endtask
 
-// NOTE: Unfortunately, Questa starter edition doesn't allow covergroups.
+// NOTE: Unfortunately, Questa starter edition and Verilator don't allow covergroups.
 // covergroup cg;
 // 	cp_a: coverpoint a;
 // 	cp_b: coverpoint b;
@@ -108,6 +109,14 @@ initial begin
 
     $display("Done. Total correct: %d/%d", attempts - incorrect, attempts);
 	// $display("Coverage = %0.2f %%", cg_inst.get_inst_coverage());
+end
+
+initial begin
+  if ($test$plusargs("trace") != 0) begin
+	 $display("[%0t] Tracing to logs/vlt_dump.vcd...\n", $time);
+	 $dumpfile("logs/vlt_dump.vcd");
+	 $dumpvars();
+  end
 end
 
 endmodule
